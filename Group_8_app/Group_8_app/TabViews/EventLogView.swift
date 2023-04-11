@@ -7,18 +7,49 @@
 
 import SwiftUI
 
+struct EventItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let type: String
+}
 
-struct EventLogView: View {
+struct EventRow: View {
+    let event: EventItem
+    let infoImage = Image(systemName: "info")
+
+    
     var body: some View {
-        ZStack {
-            Circle()
-                .frame(width: 200, height: 200)
-                .foregroundColor(.green)
-            Text("\("Event log")")
-                .foregroundColor(.white)
-                .font(.system(size: 20, weight: .bold))
+        HStack {
+            infoImage
+                .foregroundColor(.black)
+                .frame(width: 20, height: 30)
+            
+            Text(event.title)
+            Spacer()
+            if event.type == "image" {
+                infoImage
+            }
         }
     }
+}
+
+struct EventLogView: View {
+    let events = [
+        EventItem(title: "Mower is moving", type: "text"),
+        EventItem(title: "Mower has encountered an obstacle", type: "image")
+    ] // Which type of event, API call
+    
+    let infoImage = Image(systemName: "info")
+    
+    var body: some View {
+        List {
+            ForEach(events) { event in
+                EventRow(event: event)
+            }
+        }
+    }
+    
+  
 }
 
 struct EventLogView_Previews: PreviewProvider {
