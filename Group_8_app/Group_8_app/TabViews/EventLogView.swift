@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-//hejej
+
 
 struct EventLogView: View {
     var body: some View {
