@@ -14,7 +14,6 @@ extension Color {
         let green = Double((hex & 0xff00) >> 8) / 255.0
         let blue = Double((hex & 0xff) >> 0) / 255.0
         self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
-        // niffi
     }
 }
 
