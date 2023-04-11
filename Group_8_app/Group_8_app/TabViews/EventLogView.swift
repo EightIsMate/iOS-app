@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+//hej
 
 struct EventLogView: View {
     var body: some View {
