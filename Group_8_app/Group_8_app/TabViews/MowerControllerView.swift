@@ -65,7 +65,7 @@ struct MowerControllerView: View {
             Text("\(String.init(format: "%.0f", angleValue))")
                 .font(.title)
                 .bold()
-                .foregroundColor(.white)
+                .foregroundColor(.blue)
                 .offset(y: 250)
         }
     }
