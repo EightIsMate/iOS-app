@@ -20,7 +20,7 @@ struct EventRow: View { // structure of the row
 
     
     var body: some View {
-        HStack {
+        HStack { // if event with image, makes it able to press it for a popup
             infoImage
                 .foregroundColor(Color(hex: 0x273a60))
                 .frame(width: 20, height: 30)
@@ -64,7 +64,7 @@ struct EventLogView: View {
     
     var body: some View {
         List {
-            ForEach(events) { event in
+            ForEach(events) { event in // lists all events
                 EventRow(event: event)
             }
         }
@@ -123,7 +123,7 @@ struct PopupView: View { // The popup window, will add image later
         
         
     }
-    func dismiss() {
+    func dismiss() { // makes the popup button close the popup
         presentationMode.wrappedValue.dismiss()
     }
     
