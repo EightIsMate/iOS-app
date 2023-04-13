@@ -7,15 +7,16 @@
 
 import SwiftUI
 
-struct EventItem: Identifiable {
+struct EventItem: Identifiable { // each item in the list
     let id = UUID()
     let title: String
     let type: String
 }
 
-struct EventRow: View {
+struct EventRow: View { // structure of the row
     let event: EventItem
     let infoImage = Image(systemName: "info")
+    @State private var isShowingPopup = false
 
     
     var body: some View {
@@ -24,11 +25,31 @@ struct EventRow: View {
                 .foregroundColor(.black)
                 .frame(width: 20, height: 30)
             
-            Text(event.title)
-            Spacer()
             if event.type == "image" {
-                infoImage
+                Text(event.title)
+                Spacer()
+                Button(action: {
+                    isShowingPopup = true
+                }) {
+                
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.black)
+                }
+                .sheet(isPresented: $isShowingPopup) {
+                    PopupView()
+                }
+
             }
+            else {
+                Text(event.title)
+                Spacer()
+                if event.type == "image" {
+                    infoImage
+                }
+            }
+            
+            
+            
         }
     }
 }
@@ -36,7 +57,7 @@ struct EventRow: View {
 struct EventLogView: View {
     let events = [
         EventItem(title: "Mower is moving", type: "text"),
-        EventItem(title: "Mower has encountered an obstacle", type: "image")
+        EventItem(title: "Mower has encountered an obstacle", type: "image") // two types of events, one will show
     ] // Which type of event, API call
     
     let infoImage = Image(systemName: "info")
@@ -50,6 +71,41 @@ struct EventLogView: View {
     }
     
   
+}
+
+
+struct PopupView: View { // The popup window, will add image later
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+  
+        ZStack(alignment: .topTrailing) {
+            VStack {
+                Spacer()
+                Text("Image Placeholder")
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                Spacer()
+            }
+            HStack{
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.black)
+                }
+            }
+            
+        }
+        
+        
+    }
+    func dismiss() {
+        presentationMode.wrappedValue.dismiss()
+    }
+    
 }
 
 struct EventLogView_Previews: PreviewProvider {
