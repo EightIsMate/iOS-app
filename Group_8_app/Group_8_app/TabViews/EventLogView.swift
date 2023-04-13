@@ -22,7 +22,7 @@ struct EventRow: View { // structure of the row
     var body: some View {
         HStack {
             infoImage
-                .foregroundColor(.black)
+                .foregroundColor(Color(hex: 0x273a60))
                 .frame(width: 20, height: 30)
             
             if event.type == "image" {
@@ -33,7 +33,7 @@ struct EventRow: View { // structure of the row
                 }) {
                 
                     Image(systemName: "chevron.right")
-                        .foregroundColor(.black)
+                        .foregroundColor(Color(hex: 0x273a60))
                 }
                 .sheet(isPresented: $isShowingPopup) {
                     PopupView()
@@ -78,8 +78,29 @@ struct PopupView: View { // The popup window, will add image later
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-  
-        ZStack(alignment: .topTrailing) {
+        VStack {
+        
+            HStack {
+                Spacer()
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(Color(hex: 0x273a60))
+                }
+            }
+        }
+        .padding()
+        Spacer()
+        Text("Image Placeholder")
+            .foregroundColor(Color(hex: 0x273a60))
+            .padding()
+            .background(Color.white)
+            .cornerRadius(10)
+            .shadow(radius: 5)
+        Spacer()
+        
+      /*  ZStack(alignment: .topTrailing) {
             VStack {
                 Spacer()
                 Text("Image Placeholder")
@@ -98,7 +119,7 @@ struct PopupView: View { // The popup window, will add image later
                 }
             }
             
-        }
+        } */
         
         
     }
