@@ -92,12 +92,15 @@ struct PopupView: View { // The popup window, will add image later
         }
         .padding()
         Spacer()
-        Text("Image Placeholder")
+        Image("lawnImage")
+            .resizable()
+            .frame(width: 350,height: 650)
+        /*Text("Image Placeholder")
             .foregroundColor(Color(hex: 0x273a60))
             .padding()
             .background(Color.white)
             .cornerRadius(10)
-            .shadow(radius: 5)
+            .shadow(radius: 5) */
         Spacer()
         
       /*  ZStack(alignment: .topTrailing) {
