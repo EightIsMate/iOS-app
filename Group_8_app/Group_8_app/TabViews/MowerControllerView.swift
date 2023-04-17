@@ -8,6 +8,7 @@
 import SwiftUI
 
 extension Color {
+    // hello
     static let viewBackground = Color.init(red: 40/255, green: 64/255, blue: 105/255)
     static let lightShadow = Color.init(red: 23/255, green: 44/255, blue: 81/255)
     static let darkShadow = Color.init(red: 13/255, green: 16/255, blue: 24/255)
