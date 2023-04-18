@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ResponseData: Decodable {
-    let value: String
+    let position_horizontal: String
+    let position_vertical: String
+    let timestamp: String
+    let id: String
 }
 
 func APICall(completion: @escaping (String?) -> Void) {
-    let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+    let url = URL(string: "https://ims8.herokuapp.com/positions")!
     let session = URLSession.shared
     let task = session.dataTask(with: url) { data, response, error in
         guard error == nil, let data = data else {
@@ -24,7 +27,7 @@ func APICall(completion: @escaping (String?) -> Void) {
     let decoder = JSONDecoder()
         do {
             let response = try decoder.decode(ResponseData.self, from: data)
-            completion(response.value)
+            completion(response.id)
         } catch {
             print("Decode Error")
             completion("Decode Error")
