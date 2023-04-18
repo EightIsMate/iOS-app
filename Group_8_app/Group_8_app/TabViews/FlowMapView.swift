@@ -11,8 +11,9 @@ struct ResponseData: Decodable {
     let position_horizontal: String
     let position_vertical: String
     let timestamp: String
-    let id: String
+    let id: UUID
 }
+
 
 func APICall(completion: @escaping (String?) -> Void) {
     let url = URL(string: "https://ims8.herokuapp.com/positions")!
@@ -26,11 +27,12 @@ func APICall(completion: @escaping (String?) -> Void) {
     
     let decoder = JSONDecoder()
         do {
-            let response = try decoder.decode(ResponseData.self, from: data)
-            completion(response.id)
-        } catch {
-            print("Decode Error")
-            completion("Decode Error")
+            let response = try decoder.decode(Array<ResponseData>.self, from: data)
+            
+            completion(response[2].position_horizontal + " : " + response[2].position_vertical)
+        } catch let error {
+            print(error)
+            completion("Error: \(error)")
         }
     }
     
