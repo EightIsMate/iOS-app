@@ -17,57 +17,57 @@ struct LeftRightArrowsView: View {
     @State private var rightTimer: Timer?
 
     var body: some View {
-        VStack {
-            HStack {
-                // Left arrow button
-                Button(action: {}) {
-                    Image(systemName: "arrow.left")
-                        .resizable()
-                        .frame(width: 75, height: 75)
-                        .foregroundColor(.white)
-                        .background(isPressedLeft ? Color.green : leftArrowBackgroundColor)
-                        .cornerRadius(20)
-                }
-                .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedLeft) { (value, state, transaction) in
-                    state = true
-                })
-                .onChange(of: isPressedLeft) { isPressed in
-                    if isPressed {
-                        leftTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                            print("left arrow is being held down")
-                        }
-                    } else {
-                        leftTimer?.invalidate()
-                        leftTimer = nil
+        HStack {
+            // Left arrow button
+            Button(action: {}) {
+                Image(systemName: "arrow.left")
+                    .resizable()
+                    .frame(width: 75, height: 75)
+                    .foregroundColor(.white)
+                    .background(isPressedLeft ? Color.green : leftArrowBackgroundColor)
+                    .cornerRadius(20)
+            }
+            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedLeft) { (value, state, transaction) in
+                state = true
+            })
+            .onChange(of: isPressedLeft) { isPressed in
+                if isPressed {
+                    leftTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                        print("left arrow is being held down")
                     }
-                }
-
-                // Right arrow button
-                Button(action: {}) {
-                    Image(systemName: "arrow.right")
-                        .resizable()
-                        .frame(width: 75, height: 75)
-                        .foregroundColor(.white)
-                        .background(isPressedRight ? Color.green : rightArrowBackgroundColor)
-                        .cornerRadius(20)
-                }
-                .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedRight) { (value, state, transaction) in
-                    state = true
-                })
-                .onChange(of: isPressedRight) { isPressed in
-                    if isPressed {
-                        rightTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                            print("right arrow is being held down")
-                        }
-                    } else {
-                        rightTimer?.invalidate()
-                        rightTimer = nil
-                    }
+                } else {
+                    leftTimer?.invalidate()
+                    leftTimer = nil
                 }
             }
+
+            // Right arrow button
+            Button(action: {}) {
+                Image(systemName: "arrow.right")
+                    .resizable()
+                    .frame(width: 75, height: 75)
+                    .foregroundColor(.white)
+                    .background(isPressedRight ? Color.green : rightArrowBackgroundColor)
+                    .cornerRadius(20)
+            }
+            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedRight) { (value, state, transaction) in
+                state = true
+            })
+            .onChange(of: isPressedRight) { isPressed in
+                if isPressed {
+                    rightTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                        print("right arrow is being held down")
+                    }
+                } else {
+                    rightTimer?.invalidate()
+                    rightTimer = nil
+                }
+            }
+            Spacer()
         }
-        .padding(35)
-        .zIndex(1)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.leading, 35)
+        .padding(.top, 35)
     }
 }
 
