@@ -14,8 +14,9 @@ struct LeftRightArrowsView: View {
                 Image(systemName: "arrow.left")
                     .resizable()
                     .frame(width: 75, height: 75)
-                    .foregroundColor(.blue)
-                    .background(Color.yellow)
+                    .foregroundColor(.white)
+                    .background(Color(hex: 0x273a60))
+                    .cornerRadius(20)
                     .onTapGesture {
                         print("left arrow pressed")
                     }
@@ -23,8 +24,9 @@ struct LeftRightArrowsView: View {
                 Image(systemName: "arrow.right")
                     .resizable()
                     .frame(width: 75, height: 75)
-                    .foregroundColor(.blue)
-                    .background(Color.pink)
+                    .foregroundColor(.white)
+                    .background(Color(hex: 0x273a60))
+                    .cornerRadius(20)
                     .onTapGesture {
                         print("right arrow pressed")
                     }

@@ -15,18 +15,20 @@ struct UpDownArrowsView: View {
             Image(systemName: "arrow.up")
                 .resizable()
                 .frame(width: 75, height: 75)
-                .foregroundColor(.blue)
-                .background(Color.red)
+                .foregroundColor(.white)
+                .background(Color(hex: 0x273a60))
+                .cornerRadius(20)
                 .onTapGesture {
                     print("arrow up pressed")
                 }
                 .padding(30)
-            
+
             Image(systemName: "arrow.down")
                 .resizable()
                 .frame(width: 75, height: 75)
-                .foregroundColor(.blue)
-                .background(Color.green)
+                .foregroundColor(.white)
+                .background(Color(hex: 0x273a60))
+                .cornerRadius(20)
                 .onTapGesture {
                     print("arrow down pressed")
                 }
