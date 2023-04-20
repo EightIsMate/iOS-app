@@ -15,24 +15,24 @@ struct ResponseData: Decodable {
 }
 
 
-func APICall(completion: @escaping (String?) -> Void) {
+func APICall(completion: @escaping ([ResponseData]) -> Void) {
     let url = URL(string: "https://ims8.herokuapp.com/positions")!
     let session = URLSession.shared
     let task = session.dataTask(with: url) { data, response, error in
         guard error == nil, let data = data else {
             print("API Error")
-            completion("API Error")
+            completion([])
             return
         }
     
     let decoder = JSONDecoder()
         do {
             let response = try decoder.decode(Array<ResponseData>.self, from: data)
-            
-            completion(response[2].position_horizontal + " : " + response[2].position_vertical)
+            print(response)
+            completion(response)
         } catch let error {
             print(error)
-            completion("Error: \(error)")
+            completion([])
         }
     }
     
@@ -41,22 +41,53 @@ func APICall(completion: @escaping (String?) -> Void) {
 
 struct FlowMapView: View {
     
-    @State private var text = "Loading..."
+    @State private var points: [(Double, Double)] = [(0.0, 0.0)]
     
     var body: some View {
-        VStack {
-            Text(text)
+        GeometryReader { geometry in
             ZStack {
-                Circle()
-                    .frame(width: 200, height: 200)
-                    .foregroundColor(.red)
-                Text("\("Flow map")")
-                    .foregroundColor(.white)
-                    .font(.system(size: 20, weight: .bold))
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: geometry.size.height / 2))
+                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height / 2))
+                }
+                .stroke()
+                
+                // Add Y-axis
+                Path { path in
+                    path.move(to: CGPoint(x: geometry.size.width / 2, y: 0))
+                    path.addLine(to: CGPoint(x: geometry.size.width / 2, y: geometry.size.height))
+                }
+                .stroke()
+                
+                // Add points
+                Path { path in
+                    for (i, point) in points.enumerated() {
+                        let point = CGPoint(x: point.0 + 40, y: geometry.size.height - point.1 - 20)
+                        if i != points.count - 1 {
+                            path.addEllipse(in: CGRect(x: point.x - 5, y: point.y - 5, width: 10, height: 10))}
+                    }
+                }
+                .fill(Color.gray)
+                
+                Path { path in
+                    let pos = points[points.count - 1]
+                    let point = CGPoint(x: pos.0 + 40, y: geometry.size.height - pos.1 - 20)
+                            path.addEllipse(in: CGRect(x: point.x - 5, y: point.y - 5, width: 10, height: 10))
+                }
+                .fill(Color.blue)
             }
-        }.onAppear {
-            APICall { text in self.text = text ?? "Error"}
-        }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .onAppear {
+                APICall { response in
+                    // Convert ResponseData structs to (Double, Double) tuples
+                    var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                    // Update the @State variable with the tuples
+                    tuples = tuples.map { ($0 * 5, $1 * 5) }
+                    points = tuples
+                    
+                }
+            }
+        }.padding(10)
     }
 }
 
