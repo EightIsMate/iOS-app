@@ -41,8 +41,8 @@ class WebSocketHandler: NSObject, ObservableObject, URLSessionWebSocketDelegate 
         DispatchQueue.main.async {
             self.isConnected = true
         }
-        send(message: "Hello from SwiftUI app!")
-        receiveMessage()
+        // send(message: "Hello from SwiftUI app!")
+        // receiveMessage()
     }
 
 

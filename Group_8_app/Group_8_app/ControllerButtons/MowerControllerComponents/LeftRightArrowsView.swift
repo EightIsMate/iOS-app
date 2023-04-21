@@ -16,6 +16,8 @@ struct LeftRightArrowsView: View {
     @State private var leftTimer: Timer?
     @State private var rightTimer: Timer?
     
+    @StateObject private var webSocketHandler = WebSocketHandler()
+
     var body: some View {
         HStack {
             // Left arrow button
@@ -33,7 +35,8 @@ struct LeftRightArrowsView: View {
             .onChange(of: isPressedLeft) { isPressed in
                 if isPressed {
                     leftTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("left arrow is being held down")
+                        print("2")
+                        webSocketHandler.send(message: "M20")
                     }
                 } else {
                     leftTimer?.invalidate()
@@ -56,7 +59,8 @@ struct LeftRightArrowsView: View {
             .onChange(of: isPressedRight) { isPressed in
                 if isPressed {
                     rightTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("right arrow is being held down")
+                        print("1")
+                        webSocketHandler.send(message: "M10")
                     }
                 } else {
                     rightTimer?.invalidate()
@@ -68,6 +72,12 @@ struct LeftRightArrowsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.leading, 35)
         .padding(.top, 35)
+        .onAppear {
+            webSocketHandler.connect()
+        }
+        .onDisappear {
+            webSocketHandler.disconnect()
+        }
     }
 }
 
