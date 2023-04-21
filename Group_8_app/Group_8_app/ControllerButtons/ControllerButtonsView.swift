@@ -12,6 +12,7 @@ struct ControllerButtonsView: View {
         ZStack(alignment: .topLeading) {
             LeftRightArrowsView()
             UpDownArrowsView()
+            AutoMoveButtonView()
         }
     }
 }
