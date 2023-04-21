@@ -1,46 +1,46 @@
-//
-//  SettingsView.swift
-//  Group_8_app
-//
-//  Created by Kyrollos Ceriacous on 2023-04-05.
-//
 import SwiftUI
-import CoreBluetooth
-
-class BluetoothViewModel: NSObject, ObservableObject {
-    private var centralManager: CBCentralManager?
-    private var peripherals: [CBPeripheral] = []
-    @Published var peripheralNames: [String] = []
-    
-    override init() {
-        print("initializing BT")
-        super.init()
-        self.centralManager = CBCentralManager(delegate: self, queue: .main)
-    }
-}
-
-extension BluetoothViewModel: CBCentralManagerDelegate {
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            print("scanning for devices")
-            self.centralManager?.scanForPeripherals(withServices: nil)
-        }
-    }
-    
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData advertismentData: [String: Any], rssi RSSI: NSNumber) {
-        if !peripherals.contains(peripheral) {
-            self.peripherals.append(peripheral)
-            self.peripheralNames.append(peripheral.name ?? "Unnamed Device")
-        }
-    }
-}
+import Foundation
 
 struct SettingsView: View {
-    @ObservedObject private var bluetoothViewModel = BluetoothViewModel()
+    @StateObject private var webSocketHandler = WebSocketHandler()
+    @State private var messageTimer: Timer?
+    
     var body: some View {
-        NavigationView {
-            List(bluetoothViewModel.peripheralNames, id: \.self) { peripheral in
-                Text(peripheral)
+        VStack {
+            Text(webSocketHandler.receivedMessage)
+            
+            if !webSocketHandler.isConnected {
+                Button(action: {
+                    webSocketHandler.connect()
+                    print("Attempting to connect to rasberry")
+
+                }) {
+                    Text("Connect to Raspberry Pi")
+                }
+                .padding()
+            } else {
+                Button(action: {
+                    messageTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                        webSocketHandler.send(message: "Message from SwiftUI app every 3 seconds")
+                    }
+                }) {
+                    Text("Start Sending Messages")
+                }
+                .padding()
+                
+                Button(action: {
+                    messageTimer?.invalidate()
+                }) {
+                    Text("Stop Sending Messages")
+                }
+                .padding()
+                
+                Button(action: {
+                    webSocketHandler.disconnect()
+                }) {
+                    Text("Disconnect")
+                }
+                .padding()
             }
         }
     }
@@ -52,19 +52,5 @@ struct SettingsView_Previews: PreviewProvider {
     }
 }
 
-/*
 
- struct ContentView: View {
-     @ObservedObject private var bluetoothViewModel = BluetoothViewModel()
-     var body: some View {
-         NavigationView {
-             List(bluetoothViewModel.peripheralNames, id: \.self) { peripheral in
-                 Text(peripheral)
-             }
-             .navigationTitle("Peripherals")
 
-         }
-     }
- }
- 
- */
