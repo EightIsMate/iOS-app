@@ -15,7 +15,7 @@ struct LeftRightArrowsView: View {
 
     @State private var leftTimer: Timer?
     @State private var rightTimer: Timer?
-
+    
     var body: some View {
         HStack {
             // Left arrow button

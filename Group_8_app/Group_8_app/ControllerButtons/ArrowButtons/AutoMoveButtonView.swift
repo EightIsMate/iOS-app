@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct AutoMoveButtonView: View {
-    @State var isOn: Bool = false
+    @State var autoMoveIsOn = false
     
     var body: some View {
         Button(action: {
-            self.isOn.toggle()
+            self.autoMoveIsOn.toggle()
         }) {
-            Text(self.isOn ? "AutoMove: On" : "AutoMove: Off")
+            Text(self.autoMoveIsOn ? "AutoMove: On" : "AutoMove: Off")
                 .font(.largeTitle)
                 .foregroundColor(.white)
                 .padding()
-                .background(self.isOn ? Color.green : Color.gray)
+                .background(self.autoMoveIsOn ? Color.green : Color.gray)
                 .cornerRadius(10)
         }
         .frame(width: 250, height: 50)

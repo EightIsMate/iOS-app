@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ControllerButtonsView: View {
+struct ControllerButtonsView: View {    
     var body: some View {
         ZStack(alignment: .topLeading) {
             LeftRightArrowsView()
@@ -17,8 +17,10 @@ struct ControllerButtonsView: View {
     }
 }
 
+
 struct ControllerButtonsView_Previews: PreviewProvider {
     static var previews: some View {
         ControllerButtonsView()
+        
     }
 }
