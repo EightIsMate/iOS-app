@@ -54,6 +54,69 @@ struct EventItem: Identifiable { // each item in the list
 }
 */
 
+/*func fetchData() -> String {
+    
+    var results: String
+    
+    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
+    request.httpMethod = "GET"
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        guard let data = data else {
+            print(String(describing: error))
+            return
+        }
+        results = String(data: data, encoding: .utf8)!
+        print(String(data: data, encoding: .utf8)!)
+
+    }
+
+    task.resume()
+    return results
+
+}*/
+
+struct MyJson: Codable {
+    let message: String
+}
+
+func fetchData(completion: @escaping (String?) -> Void) {
+    var results: String?
+
+    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
+    request.httpMethod = "GET"
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        guard let data = data else {
+            print(String(describing: error))
+            completion(nil)
+            return
+        }
+        results = String(data: data, encoding: .utf8)
+
+        let jsonData = results?.data(using: .utf8)!
+        let decoder = JSONDecoder()
+
+        do {
+            let myJson = try decoder.decode(MyJson.self, from: jsonData!)
+
+            print(myJson) // Output: "John Doe"
+        } catch {
+            print(error)
+        }
+        //print(results![3] )
+
+        completion(results)
+    }
+
+    task.resume()
+    return 
+}
+
+
+
+
+
 
 
 struct EventRow: View { // structure of the row
@@ -98,12 +161,16 @@ struct EventRow: View { // structure of the row
 }
 
 struct EventLogView: View {
-    let events = [
-        EventItem(event_message: "Mower is moving", type: "text"),
+    @State var results: String = ""
+    /* var events = [
+        EventItem(event_message: results , type: "text"),
         EventItem(event_message: "Mower has encountered an obstacle", type: "image") // two types of events, one will show
-    ] // Which type of event, API call
+    ] */ // Which type of event, API call
+    @State var events: [EventItem] = [] // initialize events as empty array
+
     
     let infoImage = Image(systemName: "info")
+    
     
     var body: some View {
         List {
@@ -111,8 +178,22 @@ struct EventLogView: View {
                 EventRow(event: event)
             }
         }
+        .onAppear(){
+            fetchData { result in
+                if var result = result {
+                    self.results = result
+                    self.events = [EventItem(event_message: self.results, type: "text"), // initialize events here
+                                                       EventItem(event_message: "Mower has encountered an obstacle", type: "image")]
+                    print("test")
+                    print(results)
+                
+                } else {
+                    // handle the error case
+                }
+            }
+        }
+        
     }
-    
   
 }
 
@@ -151,6 +232,8 @@ struct PopupView: View { // The popup window, will add image later
     }
     
 }
+
+
 
 struct EventLogView_Previews: PreviewProvider {
     static var previews: some View {
