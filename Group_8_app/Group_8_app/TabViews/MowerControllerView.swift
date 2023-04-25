@@ -32,8 +32,10 @@ extension Color {
 */
 
 struct MowerControllerView: View {
+    @EnvironmentObject var webSocketHandler: WebSocketHandler
     var body: some View {
         ControllerButtonsView()
+            .environmentObject(webSocketHandler)
     }
 }
 

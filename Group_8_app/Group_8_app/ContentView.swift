@@ -19,11 +19,13 @@ extension Color {
 
 struct ContentView: View {
     @State var selectedTab = "Mower Controller"
+    @StateObject private var webSocketHandler = WebSocketHandler()
 
     var body: some View {
         NavigationView() {
             TabView(selection: $selectedTab) {
                 MowerControllerView()
+                    .environmentObject(webSocketHandler)
                     .onTapGesture {
                         selectedTab = "Mower Controller"
                     }

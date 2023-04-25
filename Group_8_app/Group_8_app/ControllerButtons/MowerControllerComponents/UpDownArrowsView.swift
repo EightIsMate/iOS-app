@@ -10,12 +10,17 @@ import SwiftUI
 struct UpDownArrowsView: View {
     @State var upArrowBackgroundColor = Color(hex: 0x273a60)
     @State var downArrowBackgroundColor = Color(hex: 0x273a60)
-    @GestureState private var isPressedUp = false
-    @GestureState private var isPressedDown = false
 
     @State private var upTimer: Timer?
     @State private var downTimer: Timer?
-
+    @State private var idleTimer: Timer?
+    
+    @GestureState private var isPressedUp = false
+    @GestureState private var isPressedDown = false
+    
+    @EnvironmentObject var webSocketHandler: WebSocketHandler
+    @EnvironmentObject var idleState: IdleState
+    @EnvironmentObject var autoMoveState: AutoMoveState
     var body: some View {
         VStack {
             Spacer()
@@ -26,20 +31,25 @@ struct UpDownArrowsView: View {
                     .resizable()
                     .frame(width: 75, height: 75)
                     .foregroundColor(.white)
-                    .background(isPressedUp ? Color.green : upArrowBackgroundColor)
+                    .background(isPressedUp ? Color.green : (autoMoveState.isOn ? Color.gray : upArrowBackgroundColor))
                     .cornerRadius(20)
             }
+            .disabled(autoMoveState.isOn)
             .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedUp) { (value, state, transaction) in
                 state = true
             })
             .onChange(of: isPressedUp) { isPressed in
                 if isPressed {
+                    idleState.stopIdleTimer()
                     upTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("up arrow is being held down")
+                        print("3")
                     }
                 } else {
                     upTimer?.invalidate()
                     upTimer = nil
+                    idleState.startIdleTimer()
+                    // send information to the mower that it should stand still
+                    // as long as no buttons a pressed the mower should stand completely still
                 }
             }
 
@@ -49,20 +59,25 @@ struct UpDownArrowsView: View {
                     .resizable()
                     .frame(width: 75, height: 75)
                     .foregroundColor(.white)
-                    .background(isPressedDown ? Color.green : downArrowBackgroundColor)
+                    .background(isPressedDown ? Color.green : (autoMoveState.isOn ? Color.gray : downArrowBackgroundColor))
                     .cornerRadius(20)
             }
+            .disabled(autoMoveState.isOn)
             .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedDown) { (value, state, transaction) in
                 state = true
             })
             .onChange(of: isPressedDown) { isPressed in
                 if isPressed {
-                    downTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("down arrow is being held down")
+                    idleState.stopIdleTimer()
+                    downTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                        print("4")
                     }
                 } else {
                     downTimer?.invalidate()
                     downTimer = nil
+                    idleState.startIdleTimer()
+                    // send information to the mower that it should stand still
+                    // as long as no buttons a pressed the mower should stand completely still
                 }
             }
         }

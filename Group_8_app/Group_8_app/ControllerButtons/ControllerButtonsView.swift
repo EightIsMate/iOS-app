@@ -7,12 +7,26 @@
 
 import SwiftUI
 
-struct ControllerButtonsView: View {    
+struct ControllerButtonsView: View {
+    @EnvironmentObject var webSocketHandler: WebSocketHandler
+    
+    @StateObject private var idleState = IdleState()
+    @StateObject private var autoMoveState = AutoMoveState()
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             LeftRightArrowsView()
+                .environmentObject(webSocketHandler)
+                .environmentObject(idleState)
+                .environmentObject(autoMoveState)
             UpDownArrowsView()
+                .environmentObject(webSocketHandler)
+                .environmentObject(idleState)
+                .environmentObject(autoMoveState)
             AutoMoveButtonView()
+                .environmentObject(webSocketHandler)
+                .environmentObject(idleState)
+                .environmentObject(autoMoveState)
         }
     }
 }
