@@ -35,7 +35,8 @@ struct UpDownArrowsView: View {
                     .cornerRadius(20)
             }
             .disabled(autoMoveState.isOn)
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedUp) { (value, state, transaction) in
+            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
+                .updating($isPressedUp) { (value, state, transaction) in
                 state = true
             })
             .onChange(of: isPressedUp) { isPressed in
@@ -63,7 +64,8 @@ struct UpDownArrowsView: View {
                     .cornerRadius(20)
             }
             .disabled(autoMoveState.isOn)
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedDown) { (value, state, transaction) in
+            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
+                .updating($isPressedDown) { (value, state, transaction) in
                 state = true
             })
             .onChange(of: isPressedDown) { isPressed in

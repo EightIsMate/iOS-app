@@ -12,15 +12,15 @@ class IdleState: ObservableObject {
     @Published var isIdle: Bool = false
 
     private var idleTimer: Timer?
+    // let autoMoveState = AutoMoveState()
 
     func startIdleTimer() {
         idleTimer?.invalidate()
-        // if !AutoMoveState.isOn {
-            idleTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-                self?.isIdle = true
-                print("I am idle")
-            }
-       // }
+        idleTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            self?.isIdle = true
+            print("I am idle")
+            // should sent info to the mower?
+        }
     }
 
     func stopIdleTimer() {

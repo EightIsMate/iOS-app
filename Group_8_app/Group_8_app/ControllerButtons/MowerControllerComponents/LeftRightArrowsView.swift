@@ -22,6 +22,8 @@ struct LeftRightArrowsView: View {
     @EnvironmentObject var webSocketHandler: WebSocketHandler
     @EnvironmentObject var idleState: IdleState
     @EnvironmentObject var autoMoveState: AutoMoveState
+    
+    @State var canLongPress = true
 
     var body: some View {
         HStack {
@@ -35,8 +37,9 @@ struct LeftRightArrowsView: View {
                     .cornerRadius(20)
             }
             .disabled(autoMoveState.isOn)
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedLeft) { (value, state, transaction) in
-                state = true
+            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
+                .updating($isPressedLeft) { (value, state, transaction) in
+                        state = true
             })
             .onChange(of: isPressedLeft) { isPressed in
                 if isPressed {
@@ -64,7 +67,8 @@ struct LeftRightArrowsView: View {
                     .cornerRadius(20)
             }
             .disabled(autoMoveState.isOn)
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedRight) { (value, state, transaction) in
+            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
+                .updating($isPressedRight) { (value, state, transaction) in
                 state = true
             })
             .onChange(of: isPressedRight) { isPressed in

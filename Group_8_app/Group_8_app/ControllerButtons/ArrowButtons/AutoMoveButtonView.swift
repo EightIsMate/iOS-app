@@ -14,15 +14,7 @@ struct AutoMoveButtonView: View {
     var body: some View {
         Button(action: {
             autoMoveState.isOn.toggle()
-            if autoMoveState.isOn {
-                // webSocketHandler.send(message: "A00")
-                print("auto move is on, turning off manual controls")
-                // send information to the mower that it should stand still a second or two before moving on its own
-            } else {
-                // webSocketHandler.send(message: "M00")
-                print("auto move is off, turning on manual controls")
-                // send information to the mower that it should stand still
-            }
+            print(autoMoveState.isOn)
         }) {
             Text(autoMoveState.isOn ? "AutoMove: On" : "AutoMove: Off")
                 .font(.largeTitle)
