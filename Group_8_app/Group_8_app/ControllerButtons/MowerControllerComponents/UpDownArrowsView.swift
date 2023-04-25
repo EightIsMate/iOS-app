@@ -69,7 +69,7 @@ struct UpDownArrowsView: View {
             .onChange(of: isPressedDown) { isPressed in
                 if isPressed {
                     idleState.stopIdleTimer()
-                    downTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                    downTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
                         print("4")
                     }
                 } else {
