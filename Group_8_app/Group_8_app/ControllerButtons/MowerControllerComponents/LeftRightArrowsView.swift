@@ -89,6 +89,8 @@ struct LeftRightArrowsView: View {
         .padding(.top, 35)
         .onAppear {
             webSocketHandler.connect()
+            // STOP the mower!
+            // webSocketHandler.send(message: "M10")
         }
         .onDisappear {
             webSocketHandler.disconnect()

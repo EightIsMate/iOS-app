@@ -15,10 +15,12 @@ class IdleState: ObservableObject {
 
     func startIdleTimer() {
         idleTimer?.invalidate()
-        idleTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-            self?.isIdle = true
-            print("I am idle")
-        }
+        // if !AutoMoveState.isOn {
+            idleTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+                self?.isIdle = true
+                print("I am idle")
+            }
+       // }
     }
 
     func stopIdleTimer() {

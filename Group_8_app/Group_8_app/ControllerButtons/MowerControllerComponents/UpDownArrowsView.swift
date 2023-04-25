@@ -83,7 +83,7 @@ struct UpDownArrowsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
         .padding(.leading, 35)
-        .padding(.bottom, 35)
+        .padding(.bottom, 80)
     }
 }
 
