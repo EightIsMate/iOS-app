@@ -28,60 +28,17 @@ struct EventItem: Identifiable { // each item in the list
     let type: String
 }
 
-
-/* func APIEventCall(completion: @escaping (String?) -> Void) {
-    let url = URL(string: "https://ims8.herokuapp.com/positions")!
-    let session = URLSession.shared
-    let task = session.dataTask(with: url) { data, response, error in
-        guard error == nil, let data = data else {
-            print("API Error")
-            completion("API Error")
-            return
-        }
-    
-    let decoder = JSONDecoder()
-        do {
-            let response = try decoder.decode(Array<ResponseData>.self, from: data)
-            
-            completion(response[2].position_horizontal + " : " + response[2].position_vertical)
-        } catch let error {
-            print(error)
-            completion("Error: \(error)")
-        }
-    }
-    
-    task.resume()
-}
-*/
-
-/*func fetchData() -> String {
-    
-    var results: String
-    
-    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
-    request.httpMethod = "GET"
-
-    let task = URLSession.shared.dataTask(with: request) { data, response, error in
-        guard let data = data else {
-            print(String(describing: error))
-            return
-        }
-        results = String(data: data, encoding: .utf8)!
-        print(String(data: data, encoding: .utf8)!)
-
-    }
-
-    task.resume()
-    return results
-
-}*/
-
-struct MyJson: Codable {
+struct mEventItem: Decodable, Identifiable{
+    let id: String
+    let image_id: String?  //error if it's going to decode a nil value to a non-optional type.
+    let timestamp: String
     let message: String
 }
 
+
 func fetchData(completion: @escaping (String?) -> Void) {
     var results: String?
+    var logItems = [mEventItem]()
 
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
     request.httpMethod = "GET"
@@ -92,31 +49,32 @@ func fetchData(completion: @escaping (String?) -> Void) {
             completion(nil)
             return
         }
-        results = String(data: data, encoding: .utf8)
-
-        let jsonData = results?.data(using: .utf8)!
-        let decoder = JSONDecoder()
-
         do {
-            let myJson = try decoder.decode(MyJson.self, from: jsonData!)
-
-            print(myJson) // Output: "John Doe"
-        } catch {
-            print(error)
+            let decodedData = try JSONDecoder().decode([mEventItem].self, from: data)
+            logItems = decodedData
         }
-        //print(results![3] )
+        catch DecodingError.keyNotFound(let key, let context) {
+            Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+        } catch DecodingError.valueNotFound(let type, let context) {
+            Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+        } catch DecodingError.typeMismatch(let type, let context) {
+            Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+        } catch DecodingError.dataCorrupted(let context) {
+            Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+        } catch let error as NSError {
+            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+        }
 
+        let timeStamp = logItems[0].timestamp
+        let endOfSentence = timeStamp.firstIndex(of: ".")
+        let trimmed = timeStamp[...endOfSentence!]
+        
+        results = logItems[0].message + ", " + trimmed
         completion(results)
     }
-
     task.resume()
-    return 
+    return
 }
-
-
-
-
-
 
 
 struct EventRow: View { // structure of the row
@@ -153,12 +111,10 @@ struct EventRow: View { // structure of the row
                     infoImage
                 }
             }
-            
-            
-            
         }
     }
 }
+
 
 struct EventLogView: View {
     @State var results: String = ""
@@ -180,21 +136,29 @@ struct EventLogView: View {
         }
         .onAppear(){
             fetchData { result in
-                if var result = result {
-                    self.results = result
-                    self.events = [EventItem(event_message: self.results, type: "text"), // initialize events here
-                                                       EventItem(event_message: "Mower has encountered an obstacle", type: "image")]
+                if let result = result {
+                    let mes = result
+                    let endOfSentence = mes.firstIndex(of: ",")
+                    
+                    let trimmedMessage = mes[...endOfSentence!]
+
+                    let endPOfTimeStamp = mes.firstIndex(of: "2")
+
+                    let timeStamp = mes[endPOfTimeStamp!...]
+                    
+                    self.events = [EventItem(event_message: String(trimmedMessage), type: "image"),
+                                   EventItem(event_message: String(trimmedMessage), type: "image")] // initialize events here
+                                  // EventItem(event_message: String(timeStamp), type: "text"),
+                                //   EventItem(event_message: "Mower has encountered an obstacle", type: "image")]
                     print("test")
-                    print(results)
+                    print(result)
                 
                 } else {
                     // handle the error case
                 }
             }
         }
-        
     }
-  
 }
 
 
