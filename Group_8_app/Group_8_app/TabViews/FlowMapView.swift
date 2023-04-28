@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ResponseData: Decodable {
     let position_horizontal: String
@@ -16,8 +17,8 @@ struct ResponseData: Decodable {
     let name: String
 }
 
-
-func GetPositions(completion: @escaping ([ResponseData]) -> Void) {
+class APIManager {
+ func GetPositions(completion: @escaping ([ResponseData]) -> Void) {
     let url = URL(string: "https://ims8.herokuapp.com/positions/mover")!
     let session = URLSession.shared
     let task = session.dataTask(with: url) { data, response, error in
@@ -40,7 +41,7 @@ func GetPositions(completion: @escaping ([ResponseData]) -> Void) {
     task.resume()
 }
 
-func GetObstacles(completion: @escaping ([ResponseData]) -> Void) {
+ func GetObstacles(completion: @escaping ([ResponseData]) -> Void) {
     let url = URL(string: "https://ims8.herokuapp.com/positions/obstacle")!
     let session = URLSession.shared
     let task = session.dataTask(with: url) { data, response, error in
@@ -62,12 +63,15 @@ func GetObstacles(completion: @escaping ([ResponseData]) -> Void) {
     
     task.resume()
 }
-
+}
 
 struct FlowMapView: View {
     
     @State private var mower: [(Double, Double)] = [(-1.0, -1.0)]
     @State private var obstacles: [(Double, Double)] = [(-1.0, -1.0)]
+    
+    @State var apiManager = APIManager()
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -112,20 +116,41 @@ struct FlowMapView: View {
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .onAppear {
-                GetPositions { response in
+            
+                apiManager.GetPositions { response in
                     // Convert ResponseData structs to (Double, Double) tuples
                     var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
                     tuples = tuples.map { ($0 * 5, $1 * 5) }
                     mower = tuples
                 };
-                GetObstacles { response in
+                apiManager.GetObstacles { response in
                     // Convert ResponseData structs to (Double, Double) tuples
                     var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
                     tuples = tuples.map { ($0 * 5, $1 * 5) }
                     obstacles = tuples
                     print(obstacles)
+                };
+                
+                Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
+                    apiManager.GetPositions { response in
+                        // Convert ResponseData structs to (Double, Double) tuples
+                        var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                        // Update the @State variable with the tuples
+                        tuples = tuples.map { ($0 * 5, $1 * 5) }
+                        mower = tuples
+                    };
+                }
+                Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
+                    apiManager.GetObstacles { response in
+                        // Convert ResponseData structs to (Double, Double) tuples
+                        var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                        // Update the @State variable with the tuples
+                        tuples = tuples.map { ($0 * 5, $1 * 5) }
+                        obstacles = tuples
+                        print(obstacles)
+                    };
                 }
             }
         }.padding(10)
