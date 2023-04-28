@@ -7,25 +7,23 @@
 
 import SwiftUI
 
-let testResponse = [{
-    let id : UUID = UUID()
-    let event_message: String = "Mower is moving"
-    let url: String = "";
-}, {
-    let id : UUID = UUID()
-    let event_message: String = "Mower has encountered an obstacle"
-    let url: String = "https://res.cloudinary.com/dqv4uub04/image/upload/v1681737973/huwswzzoyxv1rqp0porb.jpg";
-}, {
-    let id : UUID = UUID()
-    let event_message: String = "Mower has stopped"
-    let url: String = "";
-}]
+let testResponse: [EventItem] = [
+    EventItem(event_message: "Mower is moving", type: "text"),
+    EventItem(event_message: "Mower has encountered an obstacle", type: "image", imageURL: URL(string: "https://res.cloudinary.com/dqv4uub04/image/upload/v1681737973/huwswzzoyxv1rqp0porb.jpg")),
+    EventItem(event_message: "Mower has stopped", type: "text")
+]
 
-
-struct EventItem: Identifiable { // each item in the list
-    let id = UUID()
-    let event_message: String
-    let type: String
+struct EventItem: Identifiable {
+    var id = UUID()
+    var event_message: String
+    var type: String
+    var imageURL: URL? // new property to store the image URL
+    
+    init(event_message: String, type: String, imageURL: URL? = nil) {
+        self.event_message = event_message
+        self.type = type
+        self.imageURL = imageURL
+    }
 }
 
 struct mEventItem: Decodable, Identifiable{
@@ -118,11 +116,8 @@ struct EventRow: View { // structure of the row
 
 struct EventLogView: View {
     @State var results: String = ""
-    /* var events = [
-        EventItem(event_message: results , type: "text"),
-        EventItem(event_message: "Mower has encountered an obstacle", type: "image") // two types of events, one will show
-    ] */ // Which type of event, API call
-    @State var events: [EventItem] = [] // initialize events as empty array
+    
+    @State var events: [EventItem] = testResponse // initialize events as empty array
 
     
     let infoImage = Image(systemName: "info")
@@ -138,23 +133,16 @@ struct EventLogView: View {
             fetchData { result in
                 if let result = result {
                     let mes = result
-                    let endOfSentence = mes.firstIndex(of: ",")
+                    let endOfSentence = mes.firstIndex(of: ",")!
+                    let trimmedMessage = mes[...endOfSentence]
                     
-                    let trimmedMessage = mes[...endOfSentence!]
-
-                    let endPOfTimeStamp = mes.firstIndex(of: "2")
-
-                    let timeStamp = mes[endPOfTimeStamp!...]
+                    var newEventType = "image" // default event type
+                    if mes.contains("text") {
+                        newEventType = "text" // if message contains "text", set event type to "text"
+                    }
                     
-                    self.events = [EventItem(event_message: String(trimmedMessage), type: "image"),
-                                   EventItem(event_message: String(trimmedMessage), type: "image")] // initialize events here
-                                  // EventItem(event_message: String(timeStamp), type: "text"),
-                                //   EventItem(event_message: "Mower has encountered an obstacle", type: "image")]
-                    print("test")
-                    print(result)
-                
-                } else {
-                    // handle the error case
+                    let newEvent = EventItem(event_message: String(trimmedMessage), type: newEventType)
+                    self.events.append(newEvent) // Append new EventItem to the existing events array
                 }
             }
         }
