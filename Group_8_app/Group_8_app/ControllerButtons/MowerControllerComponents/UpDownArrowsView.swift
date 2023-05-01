@@ -43,14 +43,13 @@ struct UpDownArrowsView: View {
                 if isPressed {
                     idleState.stopIdleTimer()
                     upTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("3")
+                        webSocketHandler.send(message: "M03\n")
                     }
                 } else {
                     upTimer?.invalidate()
                     upTimer = nil
                     idleState.startIdleTimer()
-                    // send information to the mower that it should stand still
-                    // as long as no buttons a pressed the mower should stand completely still
+                    webSocketHandler.send(message: "M00\n")
                 }
             }
 
@@ -72,14 +71,13 @@ struct UpDownArrowsView: View {
                 if isPressed {
                     idleState.stopIdleTimer()
                     downTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("4")
+                        webSocketHandler.send(message: "M04\n")
                     }
                 } else {
                     downTimer?.invalidate()
                     downTimer = nil
                     idleState.startIdleTimer()
-                    // send information to the mower that it should stand still
-                    // as long as no buttons a pressed the mower should stand completely still
+                    webSocketHandler.send(message: "M00\n")
                 }
             }
         }

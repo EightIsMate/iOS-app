@@ -31,7 +31,6 @@ struct ControllerButtonsView: View {
     }
 }
 
-
 struct ControllerButtonsView_Previews: PreviewProvider {
     static var previews: some View {
         ControllerButtonsView()

@@ -20,9 +20,11 @@ struct SettingsView: View {
                 .padding()
             } else {
                 Button(action: {
+                    /*
                     messageTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
                         webSocketHandler.send(message: "Message from SwiftUI app every 3 seconds")
                     }
+                    */
                 }) {
                     Text("Start Sending Messages")
                 }
@@ -43,6 +45,14 @@ struct SettingsView: View {
                 .padding()
             }
         }
+        /*
+         .onAppear {
+             webSocketHandler.connect()
+         }
+         .onDisappear {
+             webSocketHandler.disconnect()
+         }
+         */
     }
 }
 

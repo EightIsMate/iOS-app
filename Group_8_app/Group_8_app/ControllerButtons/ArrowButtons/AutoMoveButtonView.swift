@@ -8,13 +8,20 @@
 import SwiftUI
 
 struct AutoMoveButtonView: View {
-    // @StateObject private var webSocketHandler = WebSocketHandler()
     @EnvironmentObject var autoMoveState: AutoMoveState
+    @EnvironmentObject var webSocketHandler: WebSocketHandler
+
 
     var body: some View {
         Button(action: {
             autoMoveState.isOn.toggle()
-            print(autoMoveState.isOn)
+            if autoMoveState.isOn == true {
+                print("initing auto move")
+                webSocketHandler.send(message: "A00\n")
+            } else {
+                print("initing manual control")
+                webSocketHandler.send(message: "M00\n")
+            }
         }) {
             Text(autoMoveState.isOn ? "AutoMove: On" : "AutoMove: Off")
                 .font(.largeTitle)

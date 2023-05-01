@@ -12,6 +12,31 @@ class WebSocketHandler: NSObject, ObservableObject, URLSessionWebSocketDelegate 
     @Published var isConnected: Bool = false
 
     private var webSocketTask: URLSessionWebSocketTask?
+    private var pingTimer: Timer?
+    
+    //keep alive
+    private func startPingTimer() {
+        pingTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+            self?.sendPing()
+        }
+    }
+    
+    private func stopPingTimer() {
+        pingTimer?.invalidate()
+        pingTimer = nil
+    }
+        
+    private func sendPing() {
+        webSocketTask?.sendPing { error in
+            if let error = error {
+                print("WebSocket ping error: \(error)")
+            } else {
+                print("WebSocket ping sent")
+            }
+        }
+    }
+    
+    //
     
     func connect() {
         let url = URL(string: "ws://172.20.10.9:12345")!
@@ -31,27 +56,30 @@ class WebSocketHandler: NSObject, ObservableObject, URLSessionWebSocketDelegate 
                 print("Failed to send message: \(error)")
             } else {
                 print("Message sent successfully")
+                // print(message)
             }
         }
     }
 
-    
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         print("WebSocket connection opened")
         DispatchQueue.main.async {
             self.isConnected = true
         }
-        // send(message: "Hello from SwiftUI app!")
-        // receiveMessage()
+
+        startPingTimer()
+        receiveMessage()
     }
 
 
     func disconnect() {
+        stopPingTimer()
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         DispatchQueue.main.async {
             self.isConnected = false
         }
     }
+
 
 
     func receiveMessage() {
@@ -65,7 +93,7 @@ class WebSocketHandler: NSObject, ObservableObject, URLSessionWebSocketDelegate 
                     DispatchQueue.main.async {
                         self.receivedMessage = text
                     }
-                    print("Received message: \(text)")
+                    // print("Received message: \(text)")
                 default:
                     print("Unsupported message type")
                 }

@@ -17,8 +17,7 @@ struct LeftRightArrowsView: View {
     
     @GestureState private var isPressedLeft = false
     @GestureState private var isPressedRight = false
-    
-    // @StateObject private var webSocketHandler = WebSocketHandler()
+        
     @EnvironmentObject var webSocketHandler: WebSocketHandler
     @EnvironmentObject var idleState: IdleState
     @EnvironmentObject var autoMoveState: AutoMoveState
@@ -37,7 +36,7 @@ struct LeftRightArrowsView: View {
                     .cornerRadius(20)
             }
             .disabled(autoMoveState.isOn)
-            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
+            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity)
                 .updating($isPressedLeft) { (value, state, transaction) in
                         state = true
             })
@@ -45,15 +44,13 @@ struct LeftRightArrowsView: View {
                 if isPressed {
                     idleState.stopIdleTimer()
                     leftTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("2")
-                        webSocketHandler.send(message: "M20")
+                        webSocketHandler.send(message: "M20\n")
                     }
                 } else {
                     leftTimer?.invalidate()
                     leftTimer = nil
                     idleState.startIdleTimer()
-                    // send information to the mower that it should stand still
-                    // as long as no buttons a pressed the mower should stand completely still
+                    webSocketHandler.send(message: "M00\n")
                 }
             }
 
@@ -75,15 +72,13 @@ struct LeftRightArrowsView: View {
                 if isPressed {
                     idleState.stopIdleTimer()
                     rightTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("1")
-                        webSocketHandler.send(message: "M10")
+                        webSocketHandler.send(message: "M10\n")
                     }
                 } else {
                     rightTimer?.invalidate()
                     rightTimer = nil
                     idleState.startIdleTimer()
-                    // send information to the mower that it should stand still
-                    // as long as no buttons a pressed the mower should stand completely still
+                    webSocketHandler.send(message: "M00\n")
                 }
             }
             Spacer()
@@ -91,14 +86,14 @@ struct LeftRightArrowsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.leading, 35)
         .padding(.top, 35)
+        /*
         .onAppear {
             webSocketHandler.connect()
-            // STOP the mower!
-            // webSocketHandler.send(message: "M10")
         }
         .onDisappear {
             webSocketHandler.disconnect()
         }
+        */
     }
 }
 

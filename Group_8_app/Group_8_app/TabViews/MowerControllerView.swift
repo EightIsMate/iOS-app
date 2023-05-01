@@ -36,6 +36,13 @@ struct MowerControllerView: View {
     var body: some View {
         ControllerButtonsView()
             .environmentObject(webSocketHandler)
+            .onAppear {
+                webSocketHandler.connect()
+                webSocketHandler.send(message: "M00")
+            }
+            .onDisappear {
+                webSocketHandler.disconnect()
+            }
     }
 }
 
