@@ -32,8 +32,17 @@ extension Color {
 */
 
 struct MowerControllerView: View {
+    @EnvironmentObject var webSocketHandler: WebSocketHandler
     var body: some View {
         ControllerButtonsView()
+            .environmentObject(webSocketHandler)
+            .onAppear {
+                webSocketHandler.connect()
+                webSocketHandler.send(message: "M00")
+            }
+            .onDisappear {
+                webSocketHandler.disconnect()
+            }
     }
 }
 

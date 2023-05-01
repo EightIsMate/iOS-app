@@ -10,12 +10,20 @@ import SwiftUI
 struct LeftRightArrowsView: View {
     @State var leftArrowBackgroundColor = Color(hex: 0x273a60)
     @State var rightArrowBackgroundColor = Color(hex: 0x273a60)
-    @GestureState private var isPressedLeft = false
-    @GestureState private var isPressedRight = false
-
+    
     @State private var leftTimer: Timer?
     @State private var rightTimer: Timer?
+    @State private var idleTimer: Timer?
     
+    @GestureState private var isPressedLeft = false
+    @GestureState private var isPressedRight = false
+        
+    @EnvironmentObject var webSocketHandler: WebSocketHandler
+    @EnvironmentObject var idleState: IdleState
+    @EnvironmentObject var autoMoveState: AutoMoveState
+    
+    @State var canLongPress = true
+
     var body: some View {
         HStack {
             // Left arrow button
@@ -24,20 +32,25 @@ struct LeftRightArrowsView: View {
                     .resizable()
                     .frame(width: 75, height: 75)
                     .foregroundColor(.white)
-                    .background(isPressedLeft ? Color.green : leftArrowBackgroundColor)
+                    .background(isPressedLeft ? Color.green : (autoMoveState.isOn ? Color.gray : leftArrowBackgroundColor))
                     .cornerRadius(20)
             }
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedLeft) { (value, state, transaction) in
-                state = true
+            .disabled(autoMoveState.isOn)
+            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity)
+                .updating($isPressedLeft) { (value, state, transaction) in
+                        state = true
             })
             .onChange(of: isPressedLeft) { isPressed in
                 if isPressed {
+                    idleState.stopIdleTimer()
                     leftTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("left arrow is being held down")
+                        webSocketHandler.send(message: "M20\n")
                     }
                 } else {
                     leftTimer?.invalidate()
                     leftTimer = nil
+                    idleState.startIdleTimer()
+                    webSocketHandler.send(message: "M00\n")
                 }
             }
 
@@ -47,20 +60,25 @@ struct LeftRightArrowsView: View {
                     .resizable()
                     .frame(width: 75, height: 75)
                     .foregroundColor(.white)
-                    .background(isPressedRight ? Color.green : rightArrowBackgroundColor)
+                    .background(isPressedRight ? Color.green : (autoMoveState.isOn ? Color.gray : rightArrowBackgroundColor))
                     .cornerRadius(20)
             }
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity).updating($isPressedRight) { (value, state, transaction) in
+            .disabled(autoMoveState.isOn)
+            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
+                .updating($isPressedRight) { (value, state, transaction) in
                 state = true
             })
             .onChange(of: isPressedRight) { isPressed in
                 if isPressed {
+                    idleState.stopIdleTimer()
                     rightTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                        print("right arrow is being held down")
+                        webSocketHandler.send(message: "M10\n")
                     }
                 } else {
                     rightTimer?.invalidate()
                     rightTimer = nil
+                    idleState.startIdleTimer()
+                    webSocketHandler.send(message: "M00\n")
                 }
             }
             Spacer()
@@ -68,6 +86,14 @@ struct LeftRightArrowsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.leading, 35)
         .padding(.top, 35)
+        /*
+        .onAppear {
+            webSocketHandler.connect()
+        }
+        .onDisappear {
+            webSocketHandler.disconnect()
+        }
+        */
     }
 }
 
