@@ -7,34 +7,39 @@
 
 import SwiftUI
 
-let testResponse: [EventItem] = [
+/*let testResponse: [EventItem] = [
     EventItem(event_message: "Mower is moving", type: "text"),
     EventItem(event_message: "Mower has encountered an obstacle", type: "image", imageURL: URL(string: "https://res.cloudinary.com/dqv4uub04/image/upload/v1681737973/huwswzzoyxv1rqp0porb.jpg")),
     EventItem(event_message: "Mower has stopped", type: "text")
-]
+]*/
 
-struct EventItem: Identifiable {
-    var id = UUID()
-    var event_message: String
-    var type: String
-    var imageURL: URL? // new property to store the image URL
+/*struct EventItem: Decoder, Identifiable {
+    let image_id: UUID?  //error if it's going to decode a nil value to a non-optional type.
+    let timestamp: String
+    let message: String // new property to store the image URL
     
-    init(event_message: String, type: String, imageURL: URL? = nil) {
-        self.event_message = event_message
-        self.type = type
-        self.imageURL = imageURL
+    init(event_message: String, type: String, imageID: UUID? = nil) {
+        self.message = event_message
+        self.image_id = imageID
+    }
+}
+*/
+struct mEventItem: Decodable, Identifiable{
+    let id: UUID
+    let image_id: UUID?  //error if it's going to decode a nil value to a non-optional type.
+    let timestamp: String
+    let message: String
+    
+    init(id: UUID, image_id: UUID? = nil, timestamp: String, message: String) {
+        self.message = message
+        self.image_id = image_id
+        self.id = id
+        self.timestamp = timestamp
     }
 }
 
-struct mEventItem: Decodable, Identifiable{
-    let id: String
-    let image_id: String?  //error if it's going to decode a nil value to a non-optional type.
-    let timestamp: String
-    let message: String
-}
 
-
-func fetchData(completion: @escaping (String?) -> Void) {
+func fetchData(completion: @escaping (mEventItem?) -> Void) {
     var results: String?
     var logItems = [mEventItem]()
 
@@ -63,12 +68,7 @@ func fetchData(completion: @escaping (String?) -> Void) {
             NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
         }
 
-        let timeStamp = logItems[0].timestamp
-        let endOfSentence = timeStamp.firstIndex(of: ".")
-        let trimmed = timeStamp[...endOfSentence!]
-        
-        results = logItems[0].message + ", " + trimmed
-        completion(results)
+        completion(logItems[0])
     }
     task.resume()
     return
@@ -76,7 +76,7 @@ func fetchData(completion: @escaping (String?) -> Void) {
 
 
 struct EventRow: View { // structure of the row
-    let event: EventItem
+    let event: mEventItem
     let infoImage = Image(systemName: "info")
     @State private var isShowingPopup = false
 
@@ -87,8 +87,8 @@ struct EventRow: View { // structure of the row
                 .foregroundColor(Color(hex: 0x273a60))
                 .frame(width: 20, height: 30)
             
-            if event.type == "image" {
-                Text(event.event_message)
+            if event.image_id != nil {
+                Text(event.message)
                 Spacer()
                 Button(action: {
                     isShowingPopup = true
@@ -103,9 +103,9 @@ struct EventRow: View { // structure of the row
 
             }
             else {
-                Text(event.event_message)
+                Text(event.message)
                 Spacer()
-                if event.type == "image" {
+                if event.image_id != nil {
                     infoImage
                 }
             }
@@ -114,10 +114,11 @@ struct EventRow: View { // structure of the row
 }
 
 
+
 struct EventLogView: View {
     @State var results: String = ""
     
-    @State var events: [EventItem] = testResponse // initialize events as empty array
+    @State var events: [mEventItem]  // initialize events as empty array
 
     
     let infoImage = Image(systemName: "info")
@@ -132,16 +133,17 @@ struct EventLogView: View {
         .onAppear(){
             fetchData { result in
                 if let result = result {
-                    let mes = result
-                    let endOfSentence = mes.firstIndex(of: ",")!
-                    let trimmedMessage = mes[...endOfSentence]
+                    /*
+                 //   let mes = result
+                 //   let endOfSentence = mes.firstIndex(of: ",")!
+                 //   let trimmedMessage = mes[...endOfSentence]
                     
                     var newEventType = "image" // default event type
                     if mes.contains("text") {
                         newEventType = "text" // if message contains "text", set event type to "text"
                     }
-                    
-                    let newEvent = EventItem(event_message: String(trimmedMessage), type: newEventType)
+                    */
+                    let newEvent = result // mEventItem(message: String(trimmedMessage))
                     self.events.append(newEvent) // Append new EventItem to the existing events array
                 }
             }
@@ -189,6 +191,6 @@ struct PopupView: View { // The popup window, will add image later
 
 struct EventLogView_Previews: PreviewProvider {
     static var previews: some View {
-        EventLogView()
+        EventLogView( events: <#[mEventItem]#>)
     }
 }
