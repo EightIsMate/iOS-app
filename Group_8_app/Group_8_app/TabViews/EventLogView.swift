@@ -7,24 +7,8 @@
 
 import SwiftUI
 
-/*let testResponse: [EventItem] = [
-    EventItem(event_message: "Mower is moving", type: "text"),
-    EventItem(event_message: "Mower has encountered an obstacle", type: "image", imageURL: URL(string: "https://res.cloudinary.com/dqv4uub04/image/upload/v1681737973/huwswzzoyxv1rqp0porb.jpg")),
-    EventItem(event_message: "Mower has stopped", type: "text")
-]*/
 
-/*struct EventItem: Decoder, Identifiable {
-    let image_id: UUID?  //error if it's going to decode a nil value to a non-optional type.
-    let timestamp: String
-    let message: String // new property to store the image URL
-    
-    init(event_message: String, type: String, imageID: UUID? = nil) {
-        self.message = event_message
-        self.image_id = imageID
-    }
-}
-*/
-struct mEventItem: Decodable, Identifiable{
+struct EventItem: Decodable, Identifiable{
     let id: UUID
     let image_id: UUID?  //error if it's going to decode a nil value to a non-optional type.
     let timestamp: String
@@ -38,10 +22,15 @@ struct mEventItem: Decodable, Identifiable{
     }
 }
 
+struct imageItems: Decodable, Identifiable{
+    let id: UUID
+    let img_link: String?  //error if it's going to decode a nil value to a non-optional type.
+    let positionid: String
+}
 
-func fetchData(completion: @escaping (mEventItem?) -> Void) {
-    var results: String?
-    var logItems = [mEventItem]()
+
+func fetchData(completion: @escaping (EventItem?) -> Void) {
+    var logItems = [EventItem]()
 
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
     request.httpMethod = "GET"
@@ -53,8 +42,11 @@ func fetchData(completion: @escaping (mEventItem?) -> Void) {
             return
         }
         do {
-            let decodedData = try JSONDecoder().decode([mEventItem].self, from: data)
+            let decodedData = try JSONDecoder().decode([EventItem].self, from: data)
             logItems = decodedData
+            for item in logItems {
+                completion(item)
+            }
         }
         catch DecodingError.keyNotFound(let key, let context) {
             Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
@@ -67,16 +59,88 @@ func fetchData(completion: @escaping (mEventItem?) -> Void) {
         } catch let error as NSError {
             NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
         }
+    }
+    task.resume()
+    return
+}
 
-        completion(logItems[0])
+func fetchImage(completion: @escaping (String?) -> Void) {
+    var imageLink: String = ""
+    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/image")!,timeoutInterval: Double.infinity)
+    request.httpMethod = "GET"
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        guard let data = data else {
+            print(String(describing: error))
+            return
+        }
+        do {
+            let decodedData = try JSONDecoder().decode(imageItems.self, from: data)
+            imageLink = decodedData.img_link ?? ""
+            completion(imageLink)
+        }
+        catch DecodingError.keyNotFound(let key, let context) {
+            Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+        } catch DecodingError.valueNotFound(let type, let context) {
+            Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+        } catch DecodingError.typeMismatch(let type, let context) {
+            Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+        } catch DecodingError.dataCorrupted(let context) {
+            Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+        } catch let error as NSError {
+            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+        }
     }
     task.resume()
     return
 }
 
 
+struct PopupView: View { // The popup window, will add image later
+    @Environment(\.presentationMode) var presentationMode
+    
+    @State var imgLink: String = ""
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(Color(hex: 0x273a60))
+                }
+            }
+        }
+        .padding()
+        Spacer()
+            .onAppear(){
+                fetchImage{ result in
+                    if let result = result {
+                        self.imgLink = result
+                    }
+                }
+            }
+        AsyncImage(url: URL(string: imgLink)) {
+            phase in
+            if let image = phase.image {
+                image
+                    .resizable()
+                    .frame(width: 350, height: 650)
+            }
+            
+        }
+        Spacer()
+    }
+    func dismiss() { // makes the popup button close the popup
+        presentationMode.wrappedValue.dismiss()
+    }
+    
+}
+
 struct EventRow: View { // structure of the row
-    let event: mEventItem
+    let event: EventItem
     let infoImage = Image(systemName: "info")
     @State private var isShowingPopup = false
 
@@ -113,16 +177,11 @@ struct EventRow: View { // structure of the row
     }
 }
 
-
-
 struct EventLogView: View {
-    @State var results: String = ""
     
-    @State var events: [mEventItem]  // initialize events as empty array
+    @State var events: [EventItem] = [] // initialize events as empty array
 
-    
     let infoImage = Image(systemName: "info")
-    
     
     var body: some View {
         List {
@@ -133,64 +192,21 @@ struct EventLogView: View {
         .onAppear(){
             fetchData { result in
                 if let result = result {
-                    /*
-                 //   let mes = result
-                 //   let endOfSentence = mes.firstIndex(of: ",")!
-                 //   let trimmedMessage = mes[...endOfSentence]
-                    
-                    var newEventType = "image" // default event type
-                    if mes.contains("text") {
-                        newEventType = "text" // if message contains "text", set event type to "text"
-                    }
-                    */
-                    let newEvent = result // mEventItem(message: String(trimmedMessage))
+                    let newEvent = result // EventItem(message: String(trimmedMessage))
                     self.events.append(newEvent) // Append new EventItem to the existing events array
                 }
             }
         }
+        .onDisappear(){
+            events.removeAll()
+        }
     }
 }
-
-
-struct PopupView: View { // The popup window, will add image later
-    @Environment(\.presentationMode) var presentationMode
-    
-    var body: some View {
-        VStack {
-        
-            HStack {
-                Spacer()
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(Color(hex: 0x273a60))
-                }
-            }
-        }
-        .padding()
-        Spacer()
-        AsyncImage(url: URL(string: "https://res.cloudinary.com/dqv4uub04/image/upload/v1681737973/huwswzzoyxv1rqp0porb.jpg")!) {
-            phase in
-            if let image = phase.image {
-                image
-                    .resizable()
-                    .frame(width: 350, height: 650)
-            }
-            
-        }
-        Spacer()
-    }
-    func dismiss() { // makes the popup button close the popup
-        presentationMode.wrappedValue.dismiss()
-    }
-    
-}
-
 
 
 struct EventLogView_Previews: PreviewProvider {
     static var previews: some View {
-        EventLogView( events: <#[mEventItem]#>)
+        EventLogView()
     }
 }
+
