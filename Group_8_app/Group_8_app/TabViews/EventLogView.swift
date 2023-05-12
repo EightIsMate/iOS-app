@@ -25,13 +25,12 @@ struct EventItem: Decodable, Identifiable{
 struct imageItems: Decodable, Identifiable{
     let id: UUID
     let img_link: String?  //error if it's going to decode a nil value to a non-optional type.
-    let positionid: String
+    let position_id: String
 }
 
 
 func fetchData(completion: @escaping (EventItem?) -> Void) {
     var logItems = [EventItem]()
-
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
     request.httpMethod = "GET"
 
@@ -64,11 +63,14 @@ func fetchData(completion: @escaping (EventItem?) -> Void) {
     return
 }
 
-func fetchImage(completion: @escaping (String?) -> Void) {
+func fetchImage(for eventItem: EventItem, completion: @escaping (String?) -> Void) {
     var imageLink: String = ""
-    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/image")!,timeoutInterval: Double.infinity)
+    guard let imageID = eventItem.image_id else {
+        completion(nil)
+        return
+    }
+    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/image/\(imageID)")!,timeoutInterval: Double.infinity)
     request.httpMethod = "GET"
-
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
         guard let data = data else {
             print(String(describing: error))
@@ -90,6 +92,7 @@ func fetchImage(completion: @escaping (String?) -> Void) {
         } catch let error as NSError {
             NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
         }
+        
     }
     task.resume()
     return
@@ -100,6 +103,7 @@ struct PopupView: View { // The popup window, will add image later
     @Environment(\.presentationMode) var presentationMode
     
     @State var imgLink: String = ""
+    let selectedEvent: EventItem
     
     var body: some View {
         VStack {
@@ -116,11 +120,12 @@ struct PopupView: View { // The popup window, will add image later
         .padding()
         Spacer()
             .onAppear(){
-                fetchImage{ result in
+                fetchImage(for: selectedEvent){result in
                     if let result = result {
                         self.imgLink = result
                     }
                 }
+                print(self.imgLink)
             }
         AsyncImage(url: URL(string: imgLink)) {
             phase in
@@ -162,7 +167,7 @@ struct EventRow: View { // structure of the row
                         .foregroundColor(Color(hex: 0x273a60))
                 }
                 .sheet(isPresented: $isShowingPopup) {
-                    PopupView()
+                    PopupView(selectedEvent: event)
                 }
 
             }
