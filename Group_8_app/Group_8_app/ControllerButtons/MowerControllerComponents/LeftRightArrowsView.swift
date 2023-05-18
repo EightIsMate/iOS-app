@@ -36,7 +36,7 @@ struct LeftRightArrowsView: View {
                     .cornerRadius(20)
             }
             .disabled(autoMoveState.isOn)
-            .simultaneousGesture(LongPressGesture(minimumDuration: .infinity)
+            .simultaneousGesture(autoMoveState.isOn ? nil : LongPressGesture(minimumDuration: .infinity)
                 .updating($isPressedLeft) { (value, state, transaction) in
                         state = true
             })
