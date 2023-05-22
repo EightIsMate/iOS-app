@@ -4,6 +4,7 @@
 //
 //  Created by Kyrollos Ceriacous on 2023-04-05.
 //
+/*
 import SwiftUI
 import CoreBluetooth
 
@@ -51,6 +52,7 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView()
     }
 }
+*/
 
 /*
 

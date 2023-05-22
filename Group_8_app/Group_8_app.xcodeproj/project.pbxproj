@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		082058A62A1BC820006FAA92 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082058A52A1BC820006FAA92 /* Config.swift */; };
+		082058A82A1BC95F006FAA92 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 082058A72A1BC95F006FAA92 /* Config.plist */; };
 		084A535B29E31373002A13CD /* JoyStickBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A535A29E31373002A13CD /* JoyStickBackgroundView.swift */; };
 		084A536329E3553D002A13CD /* JoyStickMiddleKnobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A536229E3553D002A13CD /* JoyStickMiddleKnobView.swift */; };
 		084A536729E35612002A13CD /* JoyStickKnobShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084A536629E35612002A13CD /* JoyStickKnobShadowView.swift */; };
@@ -24,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		082058A52A1BC820006FAA92 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		082058A72A1BC95F006FAA92 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		084A535A29E31373002A13CD /* JoyStickBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoyStickBackgroundView.swift; sourceTree = "<group>"; };
 		084A536229E3553D002A13CD /* JoyStickMiddleKnobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoyStickMiddleKnobView.swift; sourceTree = "<group>"; };
 		084A536629E35612002A13CD /* JoyStickKnobShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoyStickKnobShadowView.swift; sourceTree = "<group>"; };
@@ -65,6 +69,7 @@
 		084A536829E35664002A13CD /* Structs */ = {
 			isa = PBXGroup;
 			children = (
+				082058A52A1BC820006FAA92 /* Config.swift */,
 				084A536B29E35713002A13CD /* KnobView.swift */,
 				084A536D29E35750002A13CD /* KnobTopCircles.swift */,
 				E5C2ABAE29EED8530019A356 /* PositionData.swift */,
@@ -91,6 +96,7 @@
 		089F1FDC29DDBBEA0017F476 /* Group_8_app */ = {
 			isa = PBXGroup;
 			children = (
+				082058A72A1BC95F006FAA92 /* Config.plist */,
 				084A536829E35664002A13CD /* Structs */,
 				089F1FDD29DDBBEA0017F476 /* Group_8_appApp.swift */,
 				089F1FDF29DDBBEA0017F476 /* ContentView.swift */,
@@ -180,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				089F1FE529DDBBEB0017F476 /* Preview Assets.xcassets in Resources */,
+				082058A82A1BC95F006FAA92 /* Config.plist in Resources */,
 				089F1FE229DDBBEB0017F476 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,6 +208,7 @@
 				084A536C29E35713002A13CD /* KnobView.swift in Sources */,
 				089F1FF429DDFCA40017F476 /* SettingsView.swift in Sources */,
 				089F1FDE29DDBBEA0017F476 /* Group_8_appApp.swift in Sources */,
+				082058A62A1BC820006FAA92 /* Config.swift in Sources */,
 				089F1FEE29DDFAB90017F476 /* MowerControllerView.swift in Sources */,
 				084A536E29E35750002A13CD /* KnobTopCircles.swift in Sources */,
 			);

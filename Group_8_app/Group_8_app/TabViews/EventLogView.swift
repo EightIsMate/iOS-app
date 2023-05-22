@@ -28,11 +28,11 @@ struct imageItems: Decodable, Identifiable{
     let position_id: String
 }
 
-
 func fetchData(completion: @escaping (EventItem?) -> Void) {
     var logItems = [EventItem]()
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/events")!,timeoutInterval: Double.infinity)
     request.httpMethod = "GET"
+    request.addValue(Config.securityKey!, forHTTPHeaderField: "token")
 
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
         guard let data = data else {
@@ -71,6 +71,8 @@ func fetchImage(for eventItem: EventItem, completion: @escaping (String?) -> Voi
     }
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/image/\(imageID)")!,timeoutInterval: Double.infinity)
     request.httpMethod = "GET"
+    request.addValue(Config.securityKey!, forHTTPHeaderField: "token")
+    
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
         guard let data = data else {
             print(String(describing: error))

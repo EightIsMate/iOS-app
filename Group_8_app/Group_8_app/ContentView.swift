@@ -50,6 +50,7 @@ struct ContentView: View {
                         Text("Event log")
                     }
                     .tag("Event Log")
+                /*
                 SettingsView()
                     .onTapGesture {
                         selectedTab = "Settings"
@@ -59,6 +60,7 @@ struct ContentView: View {
                         Text("Settings")
                     }
                     .tag("Settings")
+                */
             }
             .accentColor(Color(hex: 0x273a60))
             .navigationTitle("\(selectedTab)")
