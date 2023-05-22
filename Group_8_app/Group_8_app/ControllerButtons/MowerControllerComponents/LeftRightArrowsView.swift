@@ -86,14 +86,6 @@ struct LeftRightArrowsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.leading, 35)
         .padding(.top, 35)
-        /*
-        .onAppear {
-            webSocketHandler.connect()
-        }
-        .onDisappear {
-            webSocketHandler.disconnect()
-        }
-        */
     }
 }
 

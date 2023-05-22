@@ -9,9 +9,8 @@ import SwiftUI
 
 struct ControllerButtonsView: View {
     @EnvironmentObject var webSocketHandler: WebSocketHandler
-    
-    @StateObject private var idleState = IdleState()
-    @StateObject private var autoMoveState = AutoMoveState()
+    @EnvironmentObject var idleState : IdleState
+    @EnvironmentObject var autoMoveState : AutoMoveState
 
     var body: some View {
         ZStack(alignment: .topLeading) {

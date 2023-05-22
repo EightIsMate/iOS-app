@@ -7,40 +7,30 @@
 
 import SwiftUI
 
-/*
-extension Color {
-    static let viewBackground = Color.init(red: 40/255, green: 64/255, blue: 105/255)
-    static let lightShadow = Color.init(red: 23/255, green: 44/255, blue: 81/255)
-    static let darkShadow = Color.init(red: 13/255, green: 16/255, blue: 24/255)
-    
-    static let dipCircle = LinearGradient(
-        gradient: Gradient (
-            colors: [lightShadow.opacity(0.3), darkShadow.opacity(0.3)]
-        ),
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
-    
-    static let dipCircle1 = LinearGradient (
-        gradient: Gradient (
-            colors: [Color.darkShadow]
-        ),
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
-}
-*/
-
 struct MowerControllerView: View {
     @EnvironmentObject var webSocketHandler: WebSocketHandler
+    
+    @StateObject private var idleState = IdleState()
+    @StateObject private var autoMoveState = AutoMoveState()
     var body: some View {
         ControllerButtonsView()
             .environmentObject(webSocketHandler)
+            .environmentObject(idleState)
+            .environmentObject(autoMoveState)
             .onAppear {
                 webSocketHandler.connect()
-                webSocketHandler.send(message: "M00")
+                if autoMoveState.isOn {
+                    webSocketHandler.send(message: "A00\n")
+                } else {
+                    webSocketHandler.send(message: "M00\n")
+                }
             }
             .onDisappear {
+                if autoMoveState.isOn {
+                    webSocketHandler.send(message: "A00\n")
+                } else {
+                    webSocketHandler.send(message: "I00\n")
+                }
                 webSocketHandler.disconnect()
             }
     }

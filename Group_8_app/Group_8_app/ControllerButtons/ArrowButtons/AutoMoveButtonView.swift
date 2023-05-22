@@ -33,6 +33,13 @@ struct AutoMoveButtonView: View {
         .frame(width: 250, height: 50)
         .position(x: 210, y: 160)
         .rotationEffect(.degrees(90))
+        .onAppear {
+            if autoMoveState.isOn {
+                autoMoveState.isOn = true
+            } else {
+                autoMoveState.isOn = false
+            }
+        }
     }
 }
 
