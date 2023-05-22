@@ -64,12 +64,12 @@
 			path = MowerControllerComponents;
 			sourceTree = "<group>";
 		};
-		0838EA1529F2B14B00491B9A /* WebSocketConnSetUp */ = {
+		0838EA1529F2B14B00491B9A /* WebSocketHandler */ = {
 			isa = PBXGroup;
 			children = (
 				0838EA1629F2B17400491B9A /* WebSocketClientSide.swift */,
 			);
-			path = WebSocketConnSetUp;
+			path = WebSocketHandler;
 			sourceTree = "<group>";
 		};
 		088920E729F6ACA10097EE30 /* HelperClasses */ = {
@@ -101,7 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				088920E729F6ACA10097EE30 /* HelperClasses */,
-				0838EA1529F2B14B00491B9A /* WebSocketConnSetUp */,
+				0838EA1529F2B14B00491B9A /* WebSocketHandler */,
 				08F8BA0F29EDF242007CE4D7 /* ControllerButtons */,
 				089F1FDD29DDBBEA0017F476 /* Group_8_appApp.swift */,
 				089F1FDF29DDBBEA0017F476 /* ContentView.swift */,
