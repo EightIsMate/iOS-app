@@ -14,7 +14,6 @@ class WebSocketHandler: NSObject, ObservableObject, URLSessionWebSocketDelegate 
     private var webSocketTask: URLSessionWebSocketTask?
     private var pingTimer: Timer?
     
-    //keep alive
     private func startPingTimer() {
         pingTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
             self?.sendPing()
@@ -36,10 +35,8 @@ class WebSocketHandler: NSObject, ObservableObject, URLSessionWebSocketDelegate 
         }
     }
     
-    //
-    
     func connect() {
-        let url = URL(string: "ws://172.20.10.9:12345")!
+        let url = URL(string: "ws://172.20.10.9:12345")! // Elins hotspot
         let webSocketSession = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue())
         webSocketTask = webSocketSession.webSocketTask(with: url)
         webSocketTask?.resume()

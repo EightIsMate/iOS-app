@@ -16,10 +16,8 @@ struct AutoMoveButtonView: View {
         Button(action: {
             autoMoveState.isOn.toggle()
             if autoMoveState.isOn == true {
-                print("initing auto move")
                 webSocketHandler.send(message: "A00\n")
             } else {
-                print("initing manual control")
                 webSocketHandler.send(message: "M00\n")
             }
         }) {
