@@ -1,3 +1,10 @@
+//
+//  SettingsView.swift
+//  Group_8_app
+//
+//  Created by Kyrollos Ceriacous on 2023-04-05.
+//
+/*
 import SwiftUI
 import Foundation
 
@@ -61,6 +68,7 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView()
     }
 }
+*/
 
 
 
