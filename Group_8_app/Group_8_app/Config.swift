@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  Config.swift
 //  Group_8_app
 //
-//  Created by Kyrollos Ceriacous on 2023-05-22.
+//  Created by Kyrollos Ceriacous on 2023-05-24.
 //
 
 import Foundation
@@ -17,6 +17,6 @@ struct Config {
     }
 
     static var securityKey: String? {
-        return configDictionary["securityToken"]
+        return configDictionary["securityKey"]
     }
 }

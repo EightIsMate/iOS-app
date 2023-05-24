@@ -36,7 +36,6 @@ func sendDeleteRequest(completion: @escaping (Error?) -> Void) {
     task.resume()
 }
 
-
 struct ContentView: View {
     @State var selectedTab = "Mower Controller"
     @State private var showingTrashConfirmation = false
@@ -73,17 +72,6 @@ struct ContentView: View {
                         Text("Event log")
                     }
                     .tag("Event Log")
-                /*
-                SettingsView()
-                    .onTapGesture {
-                        selectedTab = "Settings"
-                    }
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                    .tag("Settings")
-                */
             }
             .accentColor(Color(hex: 0x273a60))
             .navigationTitle("\(selectedTab)")

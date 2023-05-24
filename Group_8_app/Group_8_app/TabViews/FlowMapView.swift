@@ -36,7 +36,25 @@ class APIManager {
             let response = try decoder.decode(Array<ResponseData>.self, from: data)
             completion(response)
         } catch let error {
-            print(error)
+            if let decodingError = error as? DecodingError {
+                switch decodingError {
+                case .dataCorrupted(let context):
+                    print(context)
+                case .keyNotFound(let key, let context):
+                    print("Key '\(key)' not found:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                case .valueNotFound(let type, let context):
+                    print("Value '\(type)' not found:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                case .typeMismatch(let type, let context):
+                    print("Type '\(type)' mismatch:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                @unknown default:
+                    fatalError()
+                }
+            } else {
+                print(error)
+            }
             completion([])
         }
     }
@@ -61,7 +79,25 @@ class APIManager {
             let response = try decoder.decode(Array<ResponseData>.self, from: data)
             completion(response)
         } catch let error {
-            print(error)
+            if let decodingError = error as? DecodingError {
+                switch decodingError {
+                case .dataCorrupted(let context):
+                    print(context)
+                case .keyNotFound(let key, let context):
+                    print("Key '\(key)' not found:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                case .valueNotFound(let type, let context):
+                    print("Value '\(type)' not found:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                case .typeMismatch(let type, let context):
+                    print("Type '\(type)' mismatch:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                @unknown default:
+                    fatalError()
+                }
+            } else {
+                print(error)
+            }
             completion([])
         }
     }
@@ -82,10 +118,17 @@ func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: 
         var rescaledPositions = positions.map { position in
             return (x: (position.x - minX) / (maxX - minX), y: (position.y - minY) / (maxY - minY))
         }
-        rescaledPositions = rescaledPositions.map { position in
-            return (x: position.x * (17 - (-17)) + (-17), y: position.y * (35 - (-35)) + (-35))
-        }
     
+    rescaledPositions = rescaledPositions.map { position in
+        let xScale: Double = 17 - (-17)
+        let xOffset: Double = -17
+        let yScale: Double = 35 - (-35)
+        let yOffset: Double = -35
+        let newX: Double = position.x * xScale + xOffset
+        let newY: Double = position.y * yScale + yOffset
+        return (x: newX, y: newY)
+    }
+
         
         print(rescaledPositions)
         return rescaledPositions
