@@ -70,16 +70,39 @@ class APIManager {
 }
 }
 
+func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: Double)] {
+        let xCoords = positions.map { $0.x }
+        let yCoords = positions.map { $0.y }
+        
+        let minX = xCoords.min() ?? 0.0
+        let maxX = xCoords.max() ?? 0.0
+        let minY = yCoords.min() ?? 0.0
+        let maxY = yCoords.max() ?? 0.0
+        
+        var rescaledPositions = positions.map { position in
+            return (x: (position.x - minX) / (maxX - minX), y: (position.y - minY) / (maxY - minY))
+        }
+        rescaledPositions = rescaledPositions.map { position in
+            return (x: position.x * (17 - (-17)) + (-17), y: position.y * (35 - (-35)) + (-35))
+        }
+    
+        
+        print(rescaledPositions)
+        return rescaledPositions
+    }
+
 struct FlowMapView: View {
     
-    @State private var mower: [(Double, Double)] = [(-0.0, -0.0), (5.0, 5.0)]
-    @State private var obstacles: [(Double, Double)] = [(-0.0, -0.0)]
+    @State private var mower: [(Double, Double)] = [(-42.0, -42.0)]
+    
+    @State private var obstacles: [(Double, Double)] = [(-42.0, -42.0)]
     
     @State var apiManager = APIManager()
     
     let numberOfPoints = 10
     
     var body: some View {
+        
         GeometryReader { geometry in
             ZStack {
                 Path { path in
@@ -108,20 +131,27 @@ struct FlowMapView: View {
                 
                 Path { path in
                     for (_, point) in obstacles.enumerated() {
-                        let point = CGPoint(x: point.0 + 40, y: geometry.size.height - point.1 - 20)
-                        path.addRect(CGRect(x: point.x + geometry.size.width / 2 - 5, y: point.y + geometry.size.height / 2 - 5, width: 20, height: 20))}
+                        let originalX = point.0
+                        let originalY = point.1
+
+                        let adjustedX = (originalX * 10) + (geometry.size.width / 2)
+                        let adjustedY = (originalY * 10) + (geometry.size.height / 2)
+                        
+                        path.addRect(CGRect(x: adjustedX - 5, y: adjustedY - 5, width: 10, height: 10))}
                 }
                 .fill(Color.red)
                 // Add points
                 ForEach(mower.indices, id: \.self) { index in
                     let color = Color(red: 0, green: 0, blue: 1.0, opacity: 1.0 / Double(index + 1))
                     Path { path in
-                        let adjustedX =
-                        (mower[index].0 * 10) + (geometry.size.width / 2)
-                        let adjustedY = (mower[index].1 * 10) + (geometry.size.height / 2)
+                        let originalX = mower[index].0
+                        let originalY = mower[index].1
+
+                        let adjustedX = (originalX * 10) + (geometry.size.width / 2)
+                        let adjustedY = (originalY * 10) + (geometry.size.height / 2)
                         
-                        let point = CGPoint(x: adjustedX, y: adjustedY)
-                        path.addEllipse(in: CGRect(x: point.x - 5, y: point.y - 5, width: 10, height: 10))}
+                        path.addEllipse(in: CGRect(x: adjustedX - 5, y: adjustedY - 5, width: 10, height: 10))
+                    }
                     .fill(color)
                 }
             }
@@ -134,14 +164,14 @@ struct FlowMapView: View {
                     var tuples = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
                     tuples = tuples.map { ($0 * 50, $1 * 50) }
-                    //mower = tuples
+                    mower = rescalePositions(tuples)
                 };
                 apiManager.GetObstacles { response in
                     // Convert ResponseData structs to (Double, Double) tuples
                     var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
                     tuples = tuples.map { ($0 * 50, $1 * 50) }
-                    //obstacles = tuples
+                    obstacles = rescalePositions(tuples)
                 };
                 
                 Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
@@ -151,7 +181,7 @@ struct FlowMapView: View {
                         var tuples = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                         // Update the @State variable with the tuples
                         tuples = tuples.map { ($0 * 30, $1 * 30) }
-                        //mower = tuples
+                        mower = rescalePositions(tuples)
                     };
                 }
                 Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
@@ -160,7 +190,7 @@ struct FlowMapView: View {
                         var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                         // Update the @State variable with the tuples
                         tuples = tuples.map { ($0 * 30, $1 * 30) }
-                        //obstacles = tuples
+                        obstacles = rescalePositions(tuples)
                     };
                 }
             }
