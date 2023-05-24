@@ -101,7 +101,7 @@ func fetchImage(for eventItem: EventItem, completion: @escaping (String?) -> Voi
 }
 
 
-struct PopupView: View { // The popup window, will add image later
+struct PopupView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @State var imgLink: String = ""
@@ -146,43 +146,37 @@ struct PopupView: View { // The popup window, will add image later
     
 }
 
-struct EventRow: View { // structure of the row
+struct EventRow: View {
     let event: EventItem
     let infoImage = Image(systemName: "info")
     @State private var isShowingPopup = false
 
-    
     var body: some View {
-        HStack { // if event with image, makes it able to press it for a popup
+        HStack {
             infoImage
                 .foregroundColor(Color(hex: 0x273a60))
                 .frame(width: 20, height: 30)
             
+            Text(event.message)
+            Spacer()
+            
             if event.image_id != nil {
-                Text(event.message)
-                Spacer()
-                Button(action: {
-                    isShowingPopup = true
-                }) {
-                
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(Color(hex: 0x273a60))
-                }
-                .sheet(isPresented: $isShowingPopup) {
-                    PopupView(selectedEvent: event)
-                }
-
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color(hex: 0x273a60))
             }
-            else {
-                Text(event.message)
-                Spacer()
-                if event.image_id != nil {
-                    infoImage
-                }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if event.image_id != nil {
+                isShowingPopup = true
             }
+        }
+        .sheet(isPresented: $isShowingPopup) {
+            PopupView(selectedEvent: event)
         }
     }
 }
+
 
 struct EventLogView: View {
     
