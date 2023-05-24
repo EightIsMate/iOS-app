@@ -14,17 +14,18 @@ extension Color {
         let green = Double((hex & 0xff00) >> 8) / 255.0
         let blue = Double((hex & 0xff) >> 0) / 255.0
         self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
-        // niffi
-    }
+    }    
 }
 
 struct ContentView: View {
     @State var selectedTab = "Mower Controller"
+    @StateObject private var webSocketHandler = WebSocketHandler()
 
     var body: some View {
         NavigationView() {
             TabView(selection: $selectedTab) {
                 MowerControllerView()
+                    .environmentObject(webSocketHandler)
                     .onTapGesture {
                         selectedTab = "Mower Controller"
                     }
@@ -51,6 +52,7 @@ struct ContentView: View {
                         Text("Event log")
                     }
                     .tag("Event Log")
+                /*
                 SettingsView()
                     .onTapGesture {
                         selectedTab = "Settings"
@@ -60,6 +62,7 @@ struct ContentView: View {
                         Text("Settings")
                     }
                     .tag("Settings")
+                 */
             }
             .accentColor(Color(hex: 0x273a60))
             .navigationTitle("\(selectedTab)")
