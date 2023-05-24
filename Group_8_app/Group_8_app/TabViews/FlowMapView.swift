@@ -19,9 +19,12 @@ struct ResponseData: Decodable {
 
 class APIManager {
  func GetPositions(completion: @escaping ([ResponseData]) -> Void) {
-    let url = URL(string: "https://ims8.herokuapp.com/positions/mower")!
+     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/positions/mower")!,timeoutInterval: Double.infinity)
+     request.httpMethod = "GET"
+     request.addValue(Config.securityKey!, forHTTPHeaderField: "token")
+
     let session = URLSession.shared
-    let task = session.dataTask(with: url) { data, response, error in
+    let task = session.dataTask(with: request) { data, response, error in
         guard error == nil, let data = data else {
             print("API Error")
             completion([])
@@ -42,9 +45,11 @@ class APIManager {
 }
 
  func GetObstacles(completion: @escaping ([ResponseData]) -> Void) {
-    let url = URL(string: "https://ims8.herokuapp.com/positions/obstacle")!
+     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/positions/obstacle")!,timeoutInterval: Double.infinity)
+     request.httpMethod = "GET"
+     request.addValue(Config.securityKey!, forHTTPHeaderField: "token")
     let session = URLSession.shared
-    let task = session.dataTask(with: url) { data, response, error in
+    let task = session.dataTask(with: request) { data, response, error in
         guard error == nil, let data = data else {
             print("API Error")
             completion([])
@@ -67,8 +72,8 @@ class APIManager {
 
 struct FlowMapView: View {
     
-    @State private var mower: [(Double, Double)] = [(-1.0, -1.0)]
-    @State private var obstacles: [(Double, Double)] = [(-1.0, -1.0)]
+    @State private var mower: [(Double, Double)] = [(-0.0, -0.0), (5.0, 5.0)]
+    @State private var obstacles: [(Double, Double)] = [(-0.0, -0.0)]
     
     @State var apiManager = APIManager()
     
@@ -104,14 +109,18 @@ struct FlowMapView: View {
                 Path { path in
                     for (_, point) in obstacles.enumerated() {
                         let point = CGPoint(x: point.0 + 40, y: geometry.size.height - point.1 - 20)
-                        path.addRect(CGRect(x: point.x - 5, y: point.y - 5, width: 20, height: 20))}
+                        path.addRect(CGRect(x: point.x + geometry.size.width / 2 - 5, y: point.y + geometry.size.height / 2 - 5, width: 20, height: 20))}
                 }
                 .fill(Color.red)
                 // Add points
                 ForEach(mower.indices, id: \.self) { index in
                     let color = Color(red: 0, green: 0, blue: 1.0, opacity: 1.0 / Double(index + 1))
                     Path { path in
-                        let point = CGPoint(x: mower[index].0 + 40, y: geometry.size.height - CGFloat(mower[index].1) - 20)
+                        let adjustedX =
+                        (mower[index].0 * 10) + (geometry.size.width / 2)
+                        let adjustedY = (mower[index].1 * 10) + (geometry.size.height / 2)
+                        
+                        let point = CGPoint(x: adjustedX, y: adjustedY)
                         path.addEllipse(in: CGRect(x: point.x - 5, y: point.y - 5, width: 10, height: 10))}
                     .fill(color)
                 }
@@ -125,14 +134,14 @@ struct FlowMapView: View {
                     var tuples = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
                     tuples = tuples.map { ($0 * 50, $1 * 50) }
-                    mower = tuples
+                    //mower = tuples
                 };
                 apiManager.GetObstacles { response in
                     // Convert ResponseData structs to (Double, Double) tuples
                     var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
                     tuples = tuples.map { ($0 * 50, $1 * 50) }
-                    obstacles = tuples
+                    //obstacles = tuples
                 };
                 
                 Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
@@ -142,7 +151,7 @@ struct FlowMapView: View {
                         var tuples = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                         // Update the @State variable with the tuples
                         tuples = tuples.map { ($0 * 30, $1 * 30) }
-                        mower = tuples
+                        //mower = tuples
                     };
                 }
                 Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
@@ -151,7 +160,7 @@ struct FlowMapView: View {
                         var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                         // Update the @State variable with the tuples
                         tuples = tuples.map { ($0 * 30, $1 * 30) }
-                        obstacles = tuples
+                        //obstacles = tuples
                     };
                 }
             }
