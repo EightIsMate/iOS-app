@@ -7,18 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0838EA1029F2A71300491B9A /* AutoMoveButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA0F29F2A71300491B9A /* AutoMoveButtonView.swift */; };
+		0838EA1229F2A71B00491B9A /* LeftRightArrowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA1129F2A71B00491B9A /* LeftRightArrowsView.swift */; };
+		0838EA1429F2A72500491B9A /* UpDownArrowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA1329F2A72500491B9A /* UpDownArrowsView.swift */; };
+		0838EA1729F2B17400491B9A /* WebSocketClientSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA1629F2B17400491B9A /* WebSocketClientSide.swift */; };
+		088920E929F6ACBE0097EE30 /* IdleStateTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088920E829F6ACBE0097EE30 /* IdleStateTracker.swift */; };
+		088920EB29F7F5000097EE30 /* AutoMoveState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088920EA29F7F5000097EE30 /* AutoMoveState.swift */; };
 		089F1FDE29DDBBEA0017F476 /* Group_8_appApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FDD29DDBBEA0017F476 /* Group_8_appApp.swift */; };
 		089F1FE029DDBBEA0017F476 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FDF29DDBBEA0017F476 /* ContentView.swift */; };
 		089F1FE229DDBBEB0017F476 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089F1FE129DDBBEB0017F476 /* Assets.xcassets */; };
 		089F1FE529DDBBEB0017F476 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 089F1FE429DDBBEB0017F476 /* Preview Assets.xcassets */; };
+		089F1FEE29DDFAB90017F476 /* MowerControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FED29DDFAB90017F476 /* MowerControllerView.swift */; };
+		089F1FF029DDFC520017F476 /* FlowMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FEF29DDFC520017F476 /* FlowMapView.swift */; };
+		089F1FF229DDFC7E0017F476 /* EventLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FF129DDFC7E0017F476 /* EventLogView.swift */; };
+		089F1FF429DDFCA40017F476 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FF329DDFCA40017F476 /* SettingsView.swift */; };
+		08F8BA0E29EDF23B007CE4D7 /* ControllerButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0838EA0F29F2A71300491B9A /* AutoMoveButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AutoMoveButtonView.swift; path = Group_8_app/ControllerButtons/ArrowButtons/AutoMoveButtonView.swift; sourceTree = SOURCE_ROOT; };
+		0838EA1129F2A71B00491B9A /* LeftRightArrowsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftRightArrowsView.swift; sourceTree = "<group>"; };
+		0838EA1329F2A72500491B9A /* UpDownArrowsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpDownArrowsView.swift; sourceTree = "<group>"; };
+		0838EA1629F2B17400491B9A /* WebSocketClientSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketClientSide.swift; sourceTree = "<group>"; };
+		088920E829F6ACBE0097EE30 /* IdleStateTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleStateTracker.swift; sourceTree = "<group>"; };
+		088920EA29F7F5000097EE30 /* AutoMoveState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoMoveState.swift; sourceTree = "<group>"; };
 		089F1FDA29DDBBEA0017F476 /* Group_8_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Group_8_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		089F1FDD29DDBBEA0017F476 /* Group_8_appApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group_8_appApp.swift; sourceTree = "<group>"; };
 		089F1FDF29DDBBEA0017F476 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		089F1FE129DDBBEB0017F476 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		089F1FE429DDBBEB0017F476 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		089F1FED29DDFAB90017F476 /* MowerControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MowerControllerView.swift; sourceTree = "<group>"; };
+		089F1FEF29DDFC520017F476 /* FlowMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowMapView.swift; sourceTree = "<group>"; };
+		089F1FF129DDFC7E0017F476 /* EventLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogView.swift; sourceTree = "<group>"; };
+		089F1FF329DDFCA40017F476 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerButtonsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +54,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0838EA0E29F2A6BF00491B9A /* MowerControllerComponents */ = {
+			isa = PBXGroup;
+			children = (
+				0838EA1329F2A72500491B9A /* UpDownArrowsView.swift */,
+				0838EA1129F2A71B00491B9A /* LeftRightArrowsView.swift */,
+				0838EA0F29F2A71300491B9A /* AutoMoveButtonView.swift */,
+			);
+			path = MowerControllerComponents;
+			sourceTree = "<group>";
+		};
+		0838EA1529F2B14B00491B9A /* WebSocketHandler */ = {
+			isa = PBXGroup;
+			children = (
+				0838EA1629F2B17400491B9A /* WebSocketClientSide.swift */,
+			);
+			path = WebSocketHandler;
+			sourceTree = "<group>";
+		};
+		088920E729F6ACA10097EE30 /* HelperClasses */ = {
+			isa = PBXGroup;
+			children = (
+				088920E829F6ACBE0097EE30 /* IdleStateTracker.swift */,
+				088920EA29F7F5000097EE30 /* AutoMoveState.swift */,
+			);
+			path = HelperClasses;
+			sourceTree = "<group>";
+		};
 		089F1FD129DDBBEA0017F476 = {
 			isa = PBXGroup;
 			children = (
@@ -51,8 +100,12 @@
 		089F1FDC29DDBBEA0017F476 /* Group_8_app */ = {
 			isa = PBXGroup;
 			children = (
+				088920E729F6ACA10097EE30 /* HelperClasses */,
+				0838EA1529F2B14B00491B9A /* WebSocketHandler */,
+				08F8BA0F29EDF242007CE4D7 /* ControllerButtons */,
 				089F1FDD29DDBBEA0017F476 /* Group_8_appApp.swift */,
 				089F1FDF29DDBBEA0017F476 /* ContentView.swift */,
+				089F1FF529DE250F0017F476 /* TabViews */,
 				089F1FE129DDBBEB0017F476 /* Assets.xcassets */,
 				089F1FE329DDBBEB0017F476 /* Preview Content */,
 			);
@@ -65,6 +118,26 @@
 				089F1FE429DDBBEB0017F476 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		089F1FF529DE250F0017F476 /* TabViews */ = {
+			isa = PBXGroup;
+			children = (
+				089F1FED29DDFAB90017F476 /* MowerControllerView.swift */,
+				089F1FEF29DDFC520017F476 /* FlowMapView.swift */,
+				089F1FF129DDFC7E0017F476 /* EventLogView.swift */,
+				089F1FF329DDFCA40017F476 /* SettingsView.swift */,
+			);
+			path = TabViews;
+			sourceTree = "<group>";
+		};
+		08F8BA0F29EDF242007CE4D7 /* ControllerButtons */ = {
+			isa = PBXGroup;
+			children = (
+				0838EA0E29F2A6BF00491B9A /* MowerControllerComponents */,
+				08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */,
+			);
+			path = ControllerButtons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,8 +210,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F8BA0E29EDF23B007CE4D7 /* ControllerButtonsView.swift in Sources */,
+				0838EA1429F2A72500491B9A /* UpDownArrowsView.swift in Sources */,
+				089F1FF229DDFC7E0017F476 /* EventLogView.swift in Sources */,
+				0838EA1029F2A71300491B9A /* AutoMoveButtonView.swift in Sources */,
+				088920E929F6ACBE0097EE30 /* IdleStateTracker.swift in Sources */,
 				089F1FE029DDBBEA0017F476 /* ContentView.swift in Sources */,
+				089F1FF029DDFC520017F476 /* FlowMapView.swift in Sources */,
+				089F1FF429DDFCA40017F476 /* SettingsView.swift in Sources */,
+				088920EB29F7F5000097EE30 /* AutoMoveState.swift in Sources */,
 				089F1FDE29DDBBEA0017F476 /* Group_8_appApp.swift in Sources */,
+				0838EA1229F2A71B00491B9A /* LeftRightArrowsView.swift in Sources */,
+				089F1FEE29DDFAB90017F476 /* MowerControllerView.swift in Sources */,
+				0838EA1729F2B17400491B9A /* WebSocketClientSide.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +354,8 @@
 				DEVELOPMENT_TEAM = 3C4VZ8KHA2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow for bluetooth use";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Allow application to use bluetooth for discovering peripherals?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -299,6 +385,8 @@
 				DEVELOPMENT_TEAM = 3C4VZ8KHA2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow for bluetooth use";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Allow application to use bluetooth for discovering peripherals?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
