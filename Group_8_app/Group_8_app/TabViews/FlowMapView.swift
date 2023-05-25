@@ -134,12 +134,36 @@ func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: 
         return rescaledPositions
     }
 
-struct FlowMapView: View {
+struct ResponseData: Decodable {
+    let value: String
+}
+
+func APICall(completion: @escaping (String?) -> Void) {
+    let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+    let session = URLSession.shared
+    let task = session.dataTask(with: url) { data, response, error in
+        guard error == nil, let data = data else {
+            print("API Error")
+            completion("API Error")
+            return
+        }
     
+    let decoder = JSONDecoder()
+        do {
+            let response = try decoder.decode(ResponseData.self, from: data)
+            completion(response.value)
+        } catch {
+            print("Decode Error")
+            completion("Decode Error")
+        }
+    }
+    
+    task.resume()
+}
+
+struct FlowMapView: View {    
     @State private var mower: [(Double, Double)] = [(-42.0, -42.0)]
-    
     @State private var obstacles: [(Double, Double)] = [(-42.0, -42.0)]
-    
     @State var apiManager = APIManager()
     
     let numberOfPoints = 10
