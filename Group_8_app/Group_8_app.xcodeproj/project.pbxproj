@@ -20,7 +20,9 @@
 		089F1FEE29DDFAB90017F476 /* MowerControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FED29DDFAB90017F476 /* MowerControllerView.swift */; };
 		089F1FF029DDFC520017F476 /* FlowMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FEF29DDFC520017F476 /* FlowMapView.swift */; };
 		089F1FF229DDFC7E0017F476 /* EventLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FF129DDFC7E0017F476 /* EventLogView.swift */; };
-		089F1FF429DDFCA40017F476 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FF329DDFCA40017F476 /* SettingsView.swift */; };
+		08D83A722A1EB58000AFB089 /* Structs in Resources */ = {isa = PBXBuildFile; fileRef = 08D83A712A1EB58000AFB089 /* Structs */; };
+		08D83A762A1EB97200AFB089 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08D83A752A1EB97200AFB089 /* Config.plist */; };
+		08D83A782A1EBE7B00AFB089 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D83A772A1EBE7B00AFB089 /* Config.swift */; };
 		08F8BA0E29EDF23B007CE4D7 /* ControllerButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,7 +41,9 @@
 		089F1FED29DDFAB90017F476 /* MowerControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MowerControllerView.swift; sourceTree = "<group>"; };
 		089F1FEF29DDFC520017F476 /* FlowMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowMapView.swift; sourceTree = "<group>"; };
 		089F1FF129DDFC7E0017F476 /* EventLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogView.swift; sourceTree = "<group>"; };
-		089F1FF329DDFCA40017F476 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		08D83A712A1EB58000AFB089 /* Structs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Structs; sourceTree = "<group>"; };
+		08D83A752A1EB97200AFB089 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
+		08D83A772A1EBE7B00AFB089 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerButtonsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +104,9 @@
 		089F1FDC29DDBBEA0017F476 /* Group_8_app */ = {
 			isa = PBXGroup;
 			children = (
+				08D83A772A1EBE7B00AFB089 /* Config.swift */,
+				08D83A752A1EB97200AFB089 /* Config.plist */,
+				08D83A712A1EB58000AFB089 /* Structs */,
 				088920E729F6ACA10097EE30 /* HelperClasses */,
 				0838EA1529F2B14B00491B9A /* WebSocketHandler */,
 				08F8BA0F29EDF242007CE4D7 /* ControllerButtons */,
@@ -126,7 +133,6 @@
 				089F1FED29DDFAB90017F476 /* MowerControllerView.swift */,
 				089F1FEF29DDFC520017F476 /* FlowMapView.swift */,
 				089F1FF129DDFC7E0017F476 /* EventLogView.swift */,
-				089F1FF329DDFCA40017F476 /* SettingsView.swift */,
 			);
 			path = TabViews;
 			sourceTree = "<group>";
@@ -134,8 +140,8 @@
 		08F8BA0F29EDF242007CE4D7 /* ControllerButtons */ = {
 			isa = PBXGroup;
 			children = (
-				0838EA0E29F2A6BF00491B9A /* MowerControllerComponents */,
 				08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */,
+				0838EA0E29F2A6BF00491B9A /* MowerControllerComponents */,
 			);
 			path = ControllerButtons;
 			sourceTree = "<group>";
@@ -198,8 +204,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08D83A762A1EB97200AFB089 /* Config.plist in Resources */,
 				089F1FE529DDBBEB0017F476 /* Preview Assets.xcassets in Resources */,
 				089F1FE229DDBBEB0017F476 /* Assets.xcassets in Resources */,
+				08D83A722A1EB58000AFB089 /* Structs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,8 +224,8 @@
 				0838EA1029F2A71300491B9A /* AutoMoveButtonView.swift in Sources */,
 				088920E929F6ACBE0097EE30 /* IdleStateTracker.swift in Sources */,
 				089F1FE029DDBBEA0017F476 /* ContentView.swift in Sources */,
+				08D83A782A1EBE7B00AFB089 /* Config.swift in Sources */,
 				089F1FF029DDFC520017F476 /* FlowMapView.swift in Sources */,
-				089F1FF429DDFCA40017F476 /* SettingsView.swift in Sources */,
 				088920EB29F7F5000097EE30 /* AutoMoveState.swift in Sources */,
 				089F1FDE29DDBBEA0017F476 /* Group_8_appApp.swift in Sources */,
 				0838EA1229F2A71B00491B9A /* LeftRightArrowsView.swift in Sources */,

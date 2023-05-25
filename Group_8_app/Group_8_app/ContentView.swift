@@ -17,8 +17,28 @@ extension Color {
     }    
 }
 
+func sendDeleteRequest(completion: @escaping (Error?) -> Void) {
+    var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/session")!, timeoutInterval: Double.infinity)
+    request.httpMethod = "DELETE"
+    request.addValue(Config.securityKey!, forHTTPHeaderField: "token")
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        if let error = error {
+            print("Error: \(error)")
+            completion(error)
+            return
+        }
+        if let httpResponse = response as? HTTPURLResponse {
+            print("HTTP Response: \(httpResponse.statusCode)")
+        }
+        completion(nil)
+    }
+    task.resume()
+}
+
 struct ContentView: View {
     @State var selectedTab = "Mower Controller"
+    @State private var showingTrashConfirmation = false
     @StateObject private var webSocketHandler = WebSocketHandler()
 
     var body: some View {
@@ -52,20 +72,27 @@ struct ContentView: View {
                         Text("Event log")
                     }
                     .tag("Event Log")
-                /*
-                SettingsView()
-                    .onTapGesture {
-                        selectedTab = "Settings"
-                    }
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                    .tag("Settings")
-                 */
             }
             .accentColor(Color(hex: 0x273a60))
             .navigationTitle("\(selectedTab)")
+            .navigationBarItems(trailing:
+                Button(action: {
+                    self.showingTrashConfirmation = true
+                }) {
+                    Image(systemName: "trash")
+                }
+            )
+        }
+        .alert(isPresented: $showingTrashConfirmation) {
+            Alert(title: Text("Delete"), message: Text("Are you sure you want to delete current mower history?"), primaryButton: .destructive(Text("Delete")) {
+                sendDeleteRequest { error in
+                    if let error = error {
+                        print("Failed to send DELETE request: \(error)")
+                    } else {
+                        print("DELETE request sent successfully.")
+                    }
+                }
+            }, secondaryButton: .cancel())
         }
     }
 }
