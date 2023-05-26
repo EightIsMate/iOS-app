@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct EventItem: Decodable, Identifiable{
     let id: UUID
     let image_id: UUID?  //error if it's going to decode a nil value to a non-optional type.
@@ -26,6 +25,7 @@ struct imageItems: Decodable, Identifiable{
     let id: UUID
     let img_link: String?  //error if it's going to decode a nil value to a non-optional type.
     let position_id: String
+    let labels: [String]?
 }
 
 func fetchData(completion: @escaping (EventItem?) -> Void) {
@@ -63,10 +63,11 @@ func fetchData(completion: @escaping (EventItem?) -> Void) {
     return
 }
 
-func fetchImage(for eventItem: EventItem, completion: @escaping (String?) -> Void) {
+func fetchImage(for eventItem: EventItem, completion: @escaping (String?, String?) -> Void) {
     var imageLink: String = ""
+    var imageLabel: String = ""
     guard let imageID = eventItem.image_id else {
-        completion(nil)
+        completion(nil, nil)
         return
     }
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/image/\(imageID)")!,timeoutInterval: Double.infinity)
@@ -81,7 +82,8 @@ func fetchImage(for eventItem: EventItem, completion: @escaping (String?) -> Voi
         do {
             let decodedData = try JSONDecoder().decode(imageItems.self, from: data)
             imageLink = decodedData.img_link ?? ""
-            completion(imageLink)
+            imageLabel = decodedData.labels?.first ?? ""
+            completion(imageLink, imageLabel)
         }
         catch DecodingError.keyNotFound(let key, let context) {
             Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
@@ -100,12 +102,15 @@ func fetchImage(for eventItem: EventItem, completion: @escaping (String?) -> Voi
     return
 }
 
-
 struct PopupView: View {
+    let selectedEvent: EventItem
+
     @Environment(\.presentationMode) var presentationMode
     
     @State var imgLink: String = ""
-    let selectedEvent: EventItem
+    @State var imgLabel: String = ""
+    
+    @State private var isTextboxVisible = false
     
     var body: some View {
         VStack {
@@ -122,28 +127,55 @@ struct PopupView: View {
         .padding()
         Spacer()
             .onAppear(){
-                fetchImage(for: selectedEvent){result in
-                    if let result = result {
-                        self.imgLink = result
+                fetchImage(for: selectedEvent){imageLink, imageLabel in
+                    if let imageLink = imageLink {
+                        self.imgLink = imageLink
+                        self.isTextboxVisible = true
+                    }
+                    if let imageLabel = imageLabel {
+                        self.imgLabel = imageLabel
                     }
                 }
                 print(self.imgLink)
             }
-        AsyncImage(url: URL(string: imgLink)) {
-            phase in
-            if let image = phase.image {
-                image
-                    .resizable()
-                    .frame(width: 350, height: 650)
+        ZStack {
+            AsyncImage(url: URL(string: imgLink)) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .frame(width: 350, height: 650)
+                } else if phase.error != nil {
+                    Image(systemName: "exclamationmark.icloud")
+                        .resizable()
+                        .frame(width: 350, height: 650)
+                } else {
+                    Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
+                        .resizable()
+                        .frame(width: 350, height: 650)
+                }
             }
-            
+            .aspectRatio(contentMode: .fit)
+
+            if isTextboxVisible {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        TextField("Image Label", text: $imgLabel)
+                            .padding()
+                            .background(Color.white)
+                            .foregroundColor(Color.black)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 350, alignment: .center)
+                        Spacer()
+                    }
+                }
+            }
         }
-        Spacer()
     }
     func dismiss() { // makes the popup button close the popup
         presentationMode.wrappedValue.dismiss()
     }
-    
 }
 
 struct EventRow: View {
