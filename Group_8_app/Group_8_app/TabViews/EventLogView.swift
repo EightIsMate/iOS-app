@@ -63,11 +63,10 @@ func fetchData(completion: @escaping (EventItem?) -> Void) {
     return
 }
 
-func fetchImage(for eventItem: EventItem, completion: @escaping (String?, String?) -> Void) {
+func fetchImage(for eventItem: EventItem, completion: @escaping ((String?, [String])) -> Void) {
     var imageLink: String = ""
-    var imageLabel: String = ""
     guard let imageID = eventItem.image_id else {
-        completion(nil, nil)
+        completion((nil, []))
         return
     }
     var request = URLRequest(url: URL(string: "https://ims8.herokuapp.com/image/\(imageID)")!,timeoutInterval: Double.infinity)
@@ -82,8 +81,11 @@ func fetchImage(for eventItem: EventItem, completion: @escaping (String?, String
         do {
             let decodedData = try JSONDecoder().decode(imageItems.self, from: data)
             imageLink = decodedData.img_link ?? ""
-            imageLabel = decodedData.labels?.first ?? ""
-            completion(imageLink, imageLabel)
+            var imageLabels = [String]()
+            if let labels = decodedData.labels, labels.count >= 3 {
+                imageLabels = Array(labels.prefix(3))
+            }
+            completion((imageLink, imageLabels))
         }
         catch DecodingError.keyNotFound(let key, let context) {
             Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
@@ -108,7 +110,7 @@ struct PopupView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @State var imgLink: String = ""
-    @State var imgLabel: String = ""
+    @State var imgLabels: [String] = []
     
     @State private var isTextboxVisible = false
     
@@ -122,61 +124,56 @@ struct PopupView: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(Color(hex: 0x273a60))
                 }
-            }
-        }
-        .padding()
-        Spacer()
-            .onAppear(){
-                fetchImage(for: selectedEvent){imageLink, imageLabel in
-                    if let imageLink = imageLink {
-                        self.imgLink = imageLink
-                        self.isTextboxVisible = true
-                    }
-                    if let imageLabel = imageLabel {
-                        self.imgLabel = imageLabel
+            }.padding()
+
+            ZStack {
+                AsyncImage(url: URL(string: imgLink)) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .frame(width: 350, height: 650)
+                    } else if phase.error != nil {
+                        Image(systemName: "exclamationmark.icloud")
+                            .resizable()
+                            .frame(width: 350, height: 650)
+                    } else {
+                        Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
+                            .resizable()
+                            .frame(width: 350, height: 650)
                     }
                 }
-                print(self.imgLink)
+                .aspectRatio(contentMode: .fit)
             }
-        ZStack {
-            AsyncImage(url: URL(string: imgLink)) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .frame(width: 350, height: 650)
-                } else if phase.error != nil {
-                    Image(systemName: "exclamationmark.icloud")
-                        .resizable()
-                        .frame(width: 350, height: 650)
-                } else {
-                    Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
-                        .resizable()
-                        .frame(width: 350, height: 650)
-                }
-            }
-            .aspectRatio(contentMode: .fit)
 
             if isTextboxVisible {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        TextField("Image Label", text: $imgLabel)
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(Color.black)
-                            .multilineTextAlignment(.center)
-                            .frame(width: 350, alignment: .center)
-                        Spacer()
-                    }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    Text(imgLabels.joined(separator: ", "))
+                        .padding()
+                        .background(Color.white)
+                        .foregroundColor(Color.black)
+                        .multilineTextAlignment(.center)
+                        .frame(height: 50)
                 }
+                .padding(.top, 10)
             }
         }
+        .onAppear(){
+            fetchImage(for: selectedEvent){imageLink, imageLabels in
+                if let imageLink = imageLink {
+                    self.imgLink = imageLink
+                    self.isTextboxVisible = true
+                }
+                self.imgLabels = imageLabels
+            }
+            print(self.imgLink)
+        }
     }
+    
     func dismiss() { // makes the popup button close the popup
         presentationMode.wrappedValue.dismiss()
     }
 }
+
 
 struct EventRow: View {
     let event: EventItem
@@ -235,7 +232,6 @@ struct EventLogView: View {
         }
     }
 }
-
 
 struct EventLogView_Previews: PreviewProvider {
     static var previews: some View {
