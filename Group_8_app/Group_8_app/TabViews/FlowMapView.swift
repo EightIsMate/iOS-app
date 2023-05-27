@@ -106,19 +106,24 @@ class APIManager {
 }
 }
 
-func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: Double)] {
-        let xCoords = positions.map { $0.x }
-        let yCoords = positions.map { $0.y }
-        
-        let minX = xCoords.min() ?? 0.0
-        let maxX = xCoords.max() ?? 0.0
-        let minY = yCoords.min() ?? 0.0
-        let maxY = yCoords.max() ?? 0.0
-        
-        var rescaledPositions = positions.map { position in
-            return (x: (position.x - minX) / (maxX - minX), y: (position.y - minY) / (maxY - minY))
-        }
+func rescalePositions(_ positions: [(x: Double, y: Double)],_ obstacles: [(x: Double, y: Double)]) -> (mower: [(x: Double, y: Double)], obstacles: [(x: Double, y: Double)]) {
+    let allInfo = positions + obstacles
+    let xCoords = allInfo.map { $0.x }
+    let yCoords = allInfo.map { $0.y }
     
+    let minX = xCoords.min() ?? 0.0
+    let maxX = xCoords.max() ?? 0.0
+    let minY = yCoords.min() ?? 0.0
+    let maxY = yCoords.max() ?? 0.0
+    
+    var rescaledPositions = positions.map { position in
+        return (x: (position.x - minX) / (maxX - minX), y: (position.y - minY) / (maxY - minY))
+    }
+    
+    var rescaledObstacles = obstacles.map { position in
+        return (x: (position.x - minX) / (maxX - minX), y: (position.y - minY) / (maxY - minY))
+    }
+
     rescaledPositions = rescaledPositions.map { position in
         let xScale: Double = 17 - (-17)
         let xOffset: Double = -17
@@ -128,21 +133,28 @@ func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: 
         let newY: Double = position.y * yScale + yOffset
         return (x: newX, y: newY)
     }
-
-        
-        print(rescaledPositions)
-        return rescaledPositions
+    
+    rescaledObstacles = rescaledObstacles.map { position in
+        let xScale: Double = 17 - (-17)
+        let xOffset: Double = -17
+        let yScale: Double = 28.5 - (-28.5)
+        let yOffset: Double = -28.5
+        let newX: Double = position.x * xScale + xOffset
+        let newY: Double = position.y * yScale + yOffset
+        return (x: newX, y: newY)
+    }
+    return (rescaledPositions, rescaledObstacles)
     }
 
 struct FlowMapView: View {
     
-    @State private var mower: [(Double, Double)] = [( 17.0, 28.5)]
+    @State private var mower: [(Double, Double)] = [(-42.0, -42.0)]
     
     @State private var obstacles: [(Double, Double)] = [(-42.0, -42.0)]
     
     @State var apiManager = APIManager()
     
-    let numberOfPoints = 10
+    let numberOfPoints = 100
     
     var body: some View {
         
@@ -193,48 +205,54 @@ struct FlowMapView: View {
                         let adjustedX = (originalX * 10) + (geometry.size.width / 2)
                         let adjustedY = (originalY * 10) + (geometry.size.height / 2)
                         
-                        path.addEllipse(in: CGRect(x: adjustedX - 5, y: adjustedY - 5, width: 10, height: 10))
+                        path.addEllipse(in: CGRect(x: adjustedX - 6, y: adjustedY - 6, width: 12, height: 12))
                     }
                     .fill(color)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .onAppear {
-            
+                var tuplesPos: [(Double, Double)] = [(-42.0, -42.0)]
+                var tuplesObs: [(Double, Double)] = [(-42.0, -42.0)]
+         
+
+
                 apiManager.GetPositions { response in
                     // Convert ResponseData structs to (Double, Double) tuples
-                    var cutResponse = response.suffix(numberOfPoints)
-                    var tuples = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                    var cutResponse = response.prefix(numberOfPoints)
+                    tuplesPos = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                     // Update the @State variable with the tuples
-                    tuples = tuples.map { ($0 * 50, $1 * 50) }
-                    mower = rescalePositions(tuples)
+                    tuplesPos = tuplesPos.map { ($0 * 50, $1 * 50) }
+                    apiManager.GetObstacles { response in
+                        // Convert ResponseData structs to (Double, Double) tuples
+                        tuplesObs = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                        // Update the @State variable with the tuples
+                        tuplesObs = tuplesObs.map { ($0 * 50, $1 * 50) }
+                        
+                        (mower, obstacles) = rescalePositions(tuplesPos, tuplesObs)
+                    };
                 };
-                apiManager.GetObstacles { response in
-                    // Convert ResponseData structs to (Double, Double) tuples
-                    var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
-                    // Update the @State variable with the tuples
-                    tuples = tuples.map { ($0 * 50, $1 * 50) }
-                    obstacles = rescalePositions(tuples)
-                };
+               
+                
+                
                 
                 Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
                     apiManager.GetPositions { response in
                         // Convert ResponseData structs to (Double, Double) tuples
-                        var cutResponse = response.suffix(numberOfPoints)
-                        var tuples = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                        var cutResponse = response.prefix(numberOfPoints)
+                        var tuplesPos = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                         // Update the @State variable with the tuples
-                        tuples = tuples.map { ($0 * 30, $1 * 30) }
-                        mower = rescalePositions(tuples)
+                        tuplesPos = tuplesPos.map { ($0 * 30, $1 * 30) }
                     };
-                }
-                Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
+                
                     apiManager.GetObstacles { response in
                         // Convert ResponseData structs to (Double, Double) tuples
-                        var tuples = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                        var tuplesObs = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
                         // Update the @State variable with the tuples
-                        tuples = tuples.map { ($0 * 30, $1 * 30) }
-                        obstacles = rescalePositions(tuples)
+                        tuplesObs = tuplesObs.map { ($0 * 30, $1 * 30) }
+                        
                     };
+                    (mower, obstacles) = rescalePositions(tuplesPos, tuplesObs)
                 }
             }
         }.padding(10)
