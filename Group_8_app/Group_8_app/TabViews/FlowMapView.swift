@@ -122,8 +122,8 @@ func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: 
     rescaledPositions = rescaledPositions.map { position in
         let xScale: Double = 17 - (-17)
         let xOffset: Double = -17
-        let yScale: Double = 35 - (-35)
-        let yOffset: Double = -35
+        let yScale: Double = 28.5 - (-28.5)
+        let yOffset: Double = -28.5
         let newX: Double = position.x * xScale + xOffset
         let newY: Double = position.y * yScale + yOffset
         return (x: newX, y: newY)
@@ -136,7 +136,7 @@ func rescalePositions(_ positions: [(x: Double, y: Double)]) -> [(x: Double, y: 
 
 struct FlowMapView: View {
     
-    @State private var mower: [(Double, Double)] = [(-42.0, -42.0)]
+    @State private var mower: [(Double, Double)] = [( 17.0, 28.5)]
     
     @State private var obstacles: [(Double, Double)] = [(-42.0, -42.0)]
     
