@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		083042D52A1FB8D60083AEEB /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083042D42A1FB8D60083AEEB /* Config.plist */; };
 		0838EA1029F2A71300491B9A /* AutoMoveButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA0F29F2A71300491B9A /* AutoMoveButtonView.swift */; };
 		0838EA1229F2A71B00491B9A /* LeftRightArrowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA1129F2A71B00491B9A /* LeftRightArrowsView.swift */; };
 		0838EA1429F2A72500491B9A /* UpDownArrowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0838EA1329F2A72500491B9A /* UpDownArrowsView.swift */; };
@@ -21,12 +22,12 @@
 		089F1FF029DDFC520017F476 /* FlowMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FEF29DDFC520017F476 /* FlowMapView.swift */; };
 		089F1FF229DDFC7E0017F476 /* EventLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089F1FF129DDFC7E0017F476 /* EventLogView.swift */; };
 		08D83A722A1EB58000AFB089 /* Structs in Resources */ = {isa = PBXBuildFile; fileRef = 08D83A712A1EB58000AFB089 /* Structs */; };
-		08D83A762A1EB97200AFB089 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08D83A752A1EB97200AFB089 /* Config.plist */; };
 		08D83A782A1EBE7B00AFB089 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D83A772A1EBE7B00AFB089 /* Config.swift */; };
 		08F8BA0E29EDF23B007CE4D7 /* ControllerButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		083042D42A1FB8D60083AEEB /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		0838EA0F29F2A71300491B9A /* AutoMoveButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AutoMoveButtonView.swift; path = Group_8_app/ControllerButtons/ArrowButtons/AutoMoveButtonView.swift; sourceTree = SOURCE_ROOT; };
 		0838EA1129F2A71B00491B9A /* LeftRightArrowsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftRightArrowsView.swift; sourceTree = "<group>"; };
 		0838EA1329F2A72500491B9A /* UpDownArrowsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpDownArrowsView.swift; sourceTree = "<group>"; };
@@ -42,7 +43,6 @@
 		089F1FEF29DDFC520017F476 /* FlowMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowMapView.swift; sourceTree = "<group>"; };
 		089F1FF129DDFC7E0017F476 /* EventLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogView.swift; sourceTree = "<group>"; };
 		08D83A712A1EB58000AFB089 /* Structs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Structs; sourceTree = "<group>"; };
-		08D83A752A1EB97200AFB089 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		08D83A772A1EBE7B00AFB089 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		08F8BA0D29EDF23B007CE4D7 /* ControllerButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerButtonsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,7 +105,6 @@
 			isa = PBXGroup;
 			children = (
 				08D83A772A1EBE7B00AFB089 /* Config.swift */,
-				08D83A752A1EB97200AFB089 /* Config.plist */,
 				08D83A712A1EB58000AFB089 /* Structs */,
 				088920E729F6ACA10097EE30 /* HelperClasses */,
 				0838EA1529F2B14B00491B9A /* WebSocketHandler */,
@@ -115,6 +114,7 @@
 				089F1FF529DE250F0017F476 /* TabViews */,
 				089F1FE129DDBBEB0017F476 /* Assets.xcassets */,
 				089F1FE329DDBBEB0017F476 /* Preview Content */,
+				083042D42A1FB8D60083AEEB /* Config.plist */,
 			);
 			path = Group_8_app;
 			sourceTree = "<group>";
@@ -204,7 +204,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08D83A762A1EB97200AFB089 /* Config.plist in Resources */,
+				083042D52A1FB8D60083AEEB /* Config.plist in Resources */,
 				089F1FE529DDBBEB0017F476 /* Preview Assets.xcassets in Resources */,
 				089F1FE229DDBBEB0017F476 /* Assets.xcassets in Resources */,
 				08D83A722A1EB58000AFB089 /* Structs in Resources */,
