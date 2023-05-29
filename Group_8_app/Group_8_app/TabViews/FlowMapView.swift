@@ -179,7 +179,6 @@ struct FlowMapView: View {
     @State var apiManager = APIManager()
     
     let numberOfPoints = 100
-    
     var body: some View {
         
         GeometryReader { geometry in
@@ -216,7 +215,8 @@ struct FlowMapView: View {
                         let adjustedX = (originalX * 10) + (geometry.size.width / 2)
                         let adjustedY = (originalY * 10) + (geometry.size.height / 2)
                         
-                        path.addRect(CGRect(x: adjustedX - 5, y: adjustedY - 5, width: 10, height: 10))}
+                        // Obstacles size
+                        path.addRect(CGRect(x: adjustedX - 5, y: adjustedY - 5, width: 15, height: 15))}
                 }
                 .fill(Color.red)
                 // Add points
@@ -236,50 +236,29 @@ struct FlowMapView: View {
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .onAppear {
-                var tuplesPos: [(Double, Double)] = [(-42.0, -42.0)]
-                var tuplesObs: [(Double, Double)] = [(-42.0, -42.0)]
-         
-
-
-                apiManager.GetPositions { response in
-                    // Convert ResponseData structs to (Double, Double) tuples
-                    var cutResponse = response.prefix(numberOfPoints)
-                    tuplesPos = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
-                    // Update the @State variable with the tuples
-                    tuplesPos = tuplesPos.map { ($0 * 50, $1 * 50) }
-                    apiManager.GetObstacles { response in
-                        // Convert ResponseData structs to (Double, Double) tuples
-                        tuplesObs = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
-                        // Update the @State variable with the tuples
-                        tuplesObs = tuplesObs.map { ($0 * 50, $1 * 50) }
-                        
-                        (mower, obstacles) = rescalePositions(tuplesPos, tuplesObs)
-                    };
-                };
-               
-                
-                
-                
                 Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
                     apiManager.GetPositions { response in
                         // Convert ResponseData structs to (Double, Double) tuples
-                        var cutResponse = response.prefix(numberOfPoints)
+                        let cutResponse = response.prefix(numberOfPoints)
                         var tuplesPos = cutResponse.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
-                        // Update the @State variable with the tuples
+                        // Update the tuples
                         tuplesPos = tuplesPos.map { ($0 * 30, $1 * 30) }
-                    };
-                
-                    apiManager.GetObstacles { response in
-                        // Convert ResponseData structs to (Double, Double) tuples
-                        var tuplesObs = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
-                        // Update the @State variable with the tuples
-                        tuplesObs = tuplesObs.map { ($0 * 30, $1 * 30) }
-                        
-                    };
-                    (mower, obstacles) = rescalePositions(tuplesPos, tuplesObs)
+                    
+                        apiManager.GetObstacles { response in
+                            // Convert ResponseData structs to (Double, Double) tuples
+                            var tuplesObs = response.map { (Double($0.position_horizontal) ?? 0, Double($0.position_vertical) ?? 0) }
+                            // Update the tuples
+                            tuplesObs = tuplesObs.map { ($0 * 30, $1 * 30) }
+                            
+                            DispatchQueue.main.async {
+                                (mower, obstacles) = rescalePositions(tuplesPos, tuplesObs)
+                            }
+                        }
+                    }
                 }
             }
-        }.padding(10)
+        }
+        .padding(10)
     }
 }
 
